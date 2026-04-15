@@ -1,7 +1,9 @@
 package com.example.hackathon.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "ubicaciones")
 public class Ubicacion {

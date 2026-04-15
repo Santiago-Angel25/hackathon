@@ -1,4 +1,6 @@
-package com.example.hackathon.dto;
+package com.example.hackathon.controller;
+
+
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -37,3 +39,4 @@ public class DonacionDTO {
 
     private String ciudad;
 }
+

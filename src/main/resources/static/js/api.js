@@ -293,24 +293,13 @@ function tieneRol(rolesRequeridos) {
 /**
  * Redirigir a login si no está autenticado
  */
-function protegerRuta() {
-    if (!estaAutenticado()) {
-        window.location.href = '/login';
-    }
-}
-
-/**
- * Redirigir si no tiene el rol requerido
- * @param {string|array} rolesRequeridos
- */
-function protegerRuta(rolesRequeridos) {
+function protegerRuta(rolesRequeridos = null) {
     if (!estaAutenticado()) {
         window.location.href = '/login';
         return;
     }
 
-    if (!tieneRol(rolesRequeridos)) {
+    if (rolesRequeridos && !tieneRol(rolesRequeridos)) {
         window.location.href = '/acceso-denegado';
     }
 }
-

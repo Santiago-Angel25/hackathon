@@ -34,38 +34,27 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-
-                .csrf(csrf ->{})
-
-
+                .csrf(csrf -> {})
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
-
                 .authorizeHttpRequests(auth -> auth
-                        // 🔓 públicas
-                        .requestMatchers("/", "/login", "/registro", "/acceso-denegado", "/ejemplo").permitAll()
+                        .requestMatchers(
+                                "/", "/login", "/registro", "/acceso-denegado", "/ejemplo",
+                                "/publicar", "/donador", "/beneficiario"
+                        ).permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/api/donaciones/**").permitAll()
                         .requestMatchers("/donaciones/**").permitAll()
-
-                        // 🔐 admin
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-
-                        // 🔓 auth
                         .requestMatchers("/auth/**").permitAll()
-
-                        // 🔒 todo lo demás
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
-
-                // 🔐 login con formulario Thymeleaf
                 .formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/", true)
                         .permitAll()
                 )
-
-                // 🔓 logout
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login?logout")
                         .permitAll()
@@ -74,4 +63,3 @@ public class SecurityConfig {
         return http.build();
     }
 }
-
