@@ -3,101 +3,62 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Beneficiario - DonaNeiva</title>
+    <title>Registro Beneficiario</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-
 <body class="bg-[#F5F6FA] min-h-screen flex items-center justify-center p-6">
-
 <div class="w-full max-w-3xl bg-white rounded-2xl shadow-2xl overflow-hidden">
-
-    <!-- HEADER -->
     <div class="bg-[#2ECC71] text-white p-6 text-center">
         <h1 class="text-3xl font-bold">Registro Beneficiario</h1>
-        <p class="text-sm opacity-90">Únete y encuentra ayuda</p>
+        <p class="text-sm opacity-90">Unete y encuentra ayuda</p>
     </div>
 
-    <form class="p-8 space-y-6">
-
-        <!-- NOMBRE (REGEX) -->
+    <form id="registroBeneficiarioForm" class="p-8 space-y-6">
         <div>
             <label class="font-semibold text-[#2C3E50]">Nombre completo</label>
-            <input type="text"
-                   required
-                   pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ ]{3,80}$"
-                   title="Solo letras y espacios (mínimo 3 caracteres)"
-                   class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]"
-                   placeholder="Ej: María Pérez">
+            <input id="nombre" type="text" required class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]"
+                   placeholder="Ej: Maria Perez">
         </div>
 
-        <!-- DOCUMENTO (REGEX) -->
         <div>
             <label class="font-semibold text-[#2C3E50]">Documento</label>
-            <input type="text"
-                   required
-                   pattern="^[0-9]{6,15}$"
-                   title="Solo números (6 a 15 dígitos)"
-                   class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]"
+            <input id="documento" type="text" required class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]"
                    placeholder="123456789">
         </div>
 
-        <!-- TELÉFONO (REGEX) -->
         <div>
-            <label class="font-semibold text-[#2C3E50]">Teléfono</label>
-            <input type="tel"
-                   required
-                   pattern="^[0-9]{10}$"
-                   title="Debe contener exactamente 10 números"
-                   class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]"
-                   placeholder="Ej: 3001234567">
+            <label class="font-semibold text-[#2C3E50]">Telefono</label>
+            <input id="telefono" type="tel" required class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]"
+                   placeholder="3001234567">
         </div>
 
-        <!-- EMAIL (HTML5 NATIVO) -->
         <div>
-            <label class="font-semibold text-[#2C3E50]">Correo electrónico</label>
-            <input type="email"
-                   required
-                   class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]"
+            <label class="font-semibold text-[#2C3E50]">Correo electronico</label>
+            <input id="email" type="email" required class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]"
                    placeholder="ejemplo@email.com">
         </div>
 
-        <!-- DIRECCIÓN (REGEX) -->
         <div>
-            <label class="font-semibold text-[#2C3E50]">Dirección</label>
-            <input type="text"
-                   required
-                   pattern="^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ#.,\-\s]{5,100}$"
-                   title="Dirección válida (mínimo 5 caracteres)"
-                   class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]"
-                   placeholder="Dirección de residencia">
+            <label class="font-semibold text-[#2C3E50]">Direccion</label>
+            <input id="direccion" type="text" required class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]"
+                   placeholder="Direccion de residencia">
         </div>
 
-        <!-- CONTRASEÑA (REGEX SEGURA) -->
         <div class="grid md:grid-cols-2 gap-4">
-
             <div>
-                <label class="font-semibold">Contraseña</label>
-                <input type="password"
-                       required
-                       pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,20}$"
-                       title="Debe tener letras y números (6-20 caracteres)"
-                       class="w-full mt-1 p-3 border rounded-xl">
+                <label class="font-semibold">Contrasena</label>
+                <input id="password" type="password" required class="w-full mt-1 p-3 border rounded-xl">
             </div>
-
             <div>
-                <label class="font-semibold">Confirmar contraseña</label>
-                <input type="password"
-                       required
-                       class="w-full mt-1 p-3 border rounded-xl">
+                <label class="font-semibold">Confirmar contrasena</label>
+                <input id="confirmPassword" type="password" required class="w-full mt-1 p-3 border rounded-xl">
             </div>
         </div>
 
-        <!-- TIPO DE NECESIDAD -->
         <div>
-            <label class="font-semibold text-[#2C3E50]">¿Qué necesitas?</label>
-            <select required
-                    class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]">
+            <label class="font-semibold text-[#2C3E50]">Que necesitas?</label>
+            <select id="necesidad" required class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]">
                 <option value="">Seleccionar</option>
                 <option>Comida</option>
                 <option>Ropa</option>
@@ -106,23 +67,58 @@
             </select>
         </div>
 
-        <!-- DESCRIPCIÓN (REGEX) -->
         <div>
-            <label class="font-semibold text-[#2C3E50]">Descripción de la necesidad</label>
-            <textarea required
-                      pattern=".{10,300}"
-                      title="Mínimo 10 caracteres"
-                      class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]"
-                      placeholder="Describe tu situación"></textarea>
+            <label class="font-semibold text-[#2C3E50]">Descripcion de la necesidad</label>
+            <textarea id="descripcion" required class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]"
+                      placeholder="Describe tu situacion"></textarea>
         </div>
 
-        <!-- BOTÓN -->
-        <a href="../templates/beneficiario.html"
-           class="block text-center w-full bg-[#2ECC71] hover:bg-green-600 text-white font-bold p-3 rounded-xl transition">
+        <p id="mensajeRegistro" class="text-sm font-medium"></p>
+
+        <button type="submit" class="block text-center w-full bg-[#2ECC71] hover:bg-green-600 text-white font-bold p-3 rounded-xl transition">
             Registrarse
-        </a>
+        </button>
     </form>
 </div>
 
+<script>
+    document.getElementById('registroBeneficiarioForm').addEventListener('submit', async event => {
+        event.preventDefault();
+
+        const mensaje = document.getElementById('mensajeRegistro');
+        mensaje.textContent = '';
+        mensaje.className = 'text-sm font-medium';
+
+        const payload = {
+            nombre: document.getElementById('nombre').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            telefono: document.getElementById('telefono').value.trim(),
+            direccion: document.getElementById('direccion').value.trim(),
+            documento: document.getElementById('documento').value.trim(),
+            tipoPersona: document.getElementById('necesidad').value,
+            password: document.getElementById('password').value,
+            confirmPassword: document.getElementById('confirmPassword').value,
+            rol: 'BENEFICIARIO'
+        };
+
+        try {
+            const response = await fetch('/auth/registro', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.message || 'No se pudo registrar el usuario');
+            }
+
+            window.location.href = '/login?registroExitoso';
+        } catch (error) {
+            mensaje.textContent = error.message;
+            mensaje.classList.add('text-red-500');
+        }
+    });
+</script>
 </body>
 </html>

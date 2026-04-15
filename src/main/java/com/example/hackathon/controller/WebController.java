@@ -1,6 +1,4 @@
 package com.example.hackathon.controller;
-
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -19,12 +17,12 @@ public class WebController {
 
     @GetMapping("/registro")
     public String registro() {
-        return "registro"; // templates/registro.html
+        return "landing";
     }
 
     @GetMapping("/profile")
     public String profile() {
-        return "profile"; // templates/profile.html
+        return "landing";
     }
 
     @GetMapping("/publicar")
@@ -37,13 +35,23 @@ public class WebController {
         return "formularioDonador";
     }
 
+    @GetMapping("/donador/dashboard")
+    public String donadorDashboard() {
+        return "donador";
+    }
+
     @GetMapping("/beneficiario")
     public String beneficiario() {
         return "formularioBeneficiario";
     }
 
+    @GetMapping("/beneficiario/dashboard")
+    public String beneficiarioDashboard() {
+        return "beneficiario";
+    }
+
     @GetMapping("/acceso-denegado")
     public String accesoDenegado() {
-        return "compartidas/acceso-denegado";
+        return "landing";
     }
 }

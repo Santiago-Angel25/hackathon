@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ingresar - Neiva Solidaria</title>
+    <title>Ingresar - DonaNeiva</title>
 
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -22,7 +21,6 @@
         }
     </script>
 
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <style>
@@ -32,21 +30,17 @@
 </head>
 <body class="bg-gradient-to-br from-dark to-gray-800 min-h-screen flex items-center justify-center py-12 px-4">
     <div class="fade-in max-w-md w-full">
-        <!-- Card -->
         <div class="bg-white rounded-xl shadow-2xl overflow-hidden">
-            <!-- Header -->
             <div class="bg-gradient-to-r from-primary to-green-600 p-8 text-white text-center">
                 <i class="fas fa-sign-in-alt text-4xl mb-3 block"></i>
                 <h1 class="text-3xl font-bold">Ingresar</h1>
                 <p class="text-sm opacity-90 mt-2">Bienvenido de vuelta a DonaNeiva</p>
             </div>
 
-            <!-- Formulario -->
-            <form class="p-8" id="login-form">
-                <!-- Email -->
+            <form class="p-8" method="post" th:action="@{/login}" action="/login">
                 <div class="mb-6">
                     <label for="email" class="block text-dark font-semibold mb-2">
-                        <i class="fas fa-envelope text-primary mr-2"></i>Correo Electrónico
+                        <i class="fas fa-envelope text-primary mr-2"></i>Correo electronico
                     </label>
                     <input
                         type="email"
@@ -58,10 +52,9 @@
                     />
                 </div>
 
-                <!-- Contraseña -->
                 <div class="mb-6">
                     <label for="password" class="block text-dark font-semibold mb-2">
-                        <i class="fas fa-lock text-primary mr-2"></i>Contraseña
+                        <i class="fas fa-lock text-primary mr-2"></i>Contrasena
                     </label>
                     <div class="relative">
                         <input
@@ -70,7 +63,7 @@
                             name="password"
                             required
                             class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-primary transition"
-                            placeholder="••••••••"
+                            placeholder="********"
                         />
                         <button
                             type="button"
@@ -82,18 +75,28 @@
                     </div>
                 </div>
 
-                <!-- Recordar -->
                 <div class="mb-6 flex items-center">
                     <input
                         type="checkbox"
                         id="remember"
-                        name="remember"
+                        name="remember-me"
                         class="w-4 h-4 text-primary rounded focus:ring-2 focus:ring-primary"
                     />
-                    <label for="remember" class="ml-2 text-gray-600">Recuérdame en este dispositivo</label>
+                    <label for="remember" class="ml-2 text-gray-600">Recuerdame en este dispositivo</label>
                 </div>
 
-                <!-- Botón Ingresar -->
+                <div th:if="${param.error}" class="mb-4 p-4 rounded-lg text-sm bg-red-100 text-red-700">
+                    Correo o contrasena incorrectos.
+                </div>
+
+                <div th:if="${param.logout}" class="mb-4 p-4 rounded-lg text-sm bg-green-100 text-green-700">
+                    Sesion cerrada correctamente.
+                </div>
+
+                <div th:if="${param.registroExitoso}" class="mb-4 p-4 rounded-lg text-sm bg-green-100 text-green-700">
+                    Registro completado. Ahora puedes iniciar sesion.
+                </div>
+
                 <button
                     type="submit"
                     class="w-full bg-primary hover:bg-green-600 text-white font-bold py-3 rounded-lg transition transform hover:scale-105 mb-4"
@@ -101,7 +104,6 @@
                     <i class="fas fa-arrow-right mr-2"></i>Ingresar
                 </button>
 
-                <!-- Línea divisora -->
                 <div class="relative mb-6">
                     <div class="absolute inset-0 flex items-center">
                         <div class="w-full border-t border-gray-300"></div>
@@ -111,40 +113,32 @@
                     </div>
                 </div>
 
-                <!-- Opción Registrarse -->
                 <div class="text-center">
-                    <p class="text-gray-600 mb-3">¿No tienes cuenta?</p>
+                    <p class="text-gray-600 mb-3">No tienes cuenta?</p>
                     <a
-                        href="../templates/landing.html/#seccionRegistro"
+                        th:href="@{/#seccionRegistro}"
+                        href="/#seccionRegistro"
                         class="w-full block bg-gray-200 hover:bg-gray-300 text-dark font-bold py-3 rounded-lg transition text-center"
                     >
                         <i class="fas fa-user-plus mr-2"></i>Crear Cuenta
                     </a>
                 </div>
 
-                <!-- Volver al inicio -->
                 <div class="text-center mt-6">
-                    <a href="../templates/landing.html" class="text-primary hover:text-green-600 text-sm">
+                    <a th:href="@{/}" href="/" class="text-primary hover:text-green-600 text-sm">
                         <i class="fas fa-arrow-left mr-1"></i>Volver al inicio
                     </a>
                 </div>
             </form>
-
-            <!-- Mensaje de estado -->
-            <div id="message" class="hidden px-8 pb-4">
-                <div id="message-content" class="p-4 rounded-lg text-sm"></div>
-            </div>
         </div>
 
-        <!-- Información adicional -->
         <div class="mt-8 text-center text-gray-300 text-sm">
-            <p><i class="fas fa-lock text-primary mr-2"></i>Tus datos están seguros y protegidos</p>
-            <p class="mt-2"><a href="#" class="text-primary hover:text-green-600">Términos de servicio</a> • <a href="#" class="text-primary hover:text-green-600">Privacidad</a></p>
+            <p><i class="fas fa-lock text-primary mr-2"></i>Tus datos estan seguros y protegidos</p>
+            <p class="mt-2"><a href="#" class="text-primary hover:text-green-600">Terminos de servicio</a> • <a href="#" class="text-primary hover:text-green-600">Privacidad</a></p>
         </div>
     </div>
 
     <script>
-        // Toggle contraseña
         function togglePassword() {
             const input = document.getElementById('password');
             const icon = document.getElementById('toggle-icon');
@@ -159,60 +153,6 @@
                 icon.classList.add('fa-eye');
             }
         }
-
-        // Manejar envío del formulario
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            try {
-                const response = await fetch('/api/auth/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ email, password })
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    // Guardar token
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('rol', data.rol);
-
-                    // Redirigir según rol
-                    switch(data.rol) {
-                        case 'DONADOR':
-                            window.location.href = '/donador/dashboard';
-                            break;
-                        case 'BENEFICIARIO':
-                            window.location.href = '/beneficiario/dashboard';
-                            break;
-                        case 'ADMIN':
-                            window.location.href = '/admin/dashboard';
-                            break;
-                        default:
-                            window.location.href = '/';
-                    }
-                } else {
-                    mostrarError('Correo o contraseña incorrectos');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                mostrarError('Error al conectar. Intenta más tarde.');
-            }
-        });
-
-        function mostrarError(mensaje) {
-            const messageDiv = document.getElementById('message');
-            const messageContent = document.getElementById('message-content');
-            messageContent.textContent = mensaje;
-            messageContent.className = 'p-4 rounded-lg text-sm bg-red-100 text-red-700';
-            messageDiv.classList.remove('hidden');
-        }
     </script>
 </body>
 </html>
-

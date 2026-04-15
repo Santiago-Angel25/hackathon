@@ -4,12 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Beneficiario</title>
-
     <script src="https://cdn.tailwindcss.com"></script>
-
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
     <script>
         tailwind.config = {
             theme: {
@@ -23,25 +20,18 @@
             }
         }
     </script>
-
 </head>
-
 <body class="bg-[#F5F6FA] min-h-screen">
-
-<!-- NAVBAR (igual al donador) -->
 <nav class="bg-dark text-white p-4 flex justify-between items-center">
     <h1 class="text-xl font-bold">DonaNeiva - Beneficiario</h1>
-    <a href="../templates/landing.html" class="bg-red-500 px-4 py-2 rounded inline-block text-white text-center">
-        Cerrar sesión
+    <a href="/logout" class="bg-red-500 px-4 py-2 rounded inline-block text-white text-center">
+        Cerrar sesion
     </a>
 </nav>
 
 <div class="max-w-6xl mx-auto p-6">
-
-    <!-- FILTROS -->
     <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
         <h2 class="text-xl font-bold text-dark mb-4">Filtrar Donaciones</h2>
-
         <div class="flex flex-wrap gap-3">
             <button class="filtro bg-primary text-white px-4 py-2 rounded" data-tipo="all">Todas</button>
             <button class="filtro bg-gray-200 px-4 py-2 rounded" data-tipo="comida">Comida</button>
@@ -51,66 +41,50 @@
         </div>
     </div>
 
-    <!-- MAPA -->
     <div class="bg-white rounded-xl shadow-lg p-4">
         <h2 class="text-2xl font-bold text-dark mb-4">Donaciones disponibles</h2>
         <div id="map" class="h-[500px] rounded-xl"></div>
     </div>
-
 </div>
 
 <script>
-
     let map = L.map('map').setView([2.9386, -75.2811], 13);
     let marcadores = [];
     let donacionesGlobal = [];
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-    //  CARGAR DESDE BACKEND
-    async function cargarDonaciones(){
+    async function cargarDonaciones() {
         try {
             const response = await fetch('/donaciones');
             const data = await response.json();
-
             donacionesGlobal = data;
             pintarMarcadores(data);
-
-        } catch (e){
-            console.error("Error:", e);
+        } catch (e) {
+            console.error('Error:', e);
         }
     }
 
-    //  PINTAR MARCADORES
-    function pintarMarcadores(lista){
-
+    function pintarMarcadores(lista) {
         marcadores.forEach(m => map.removeLayer(m));
         marcadores = [];
 
         lista.forEach(d => {
+            const lat = d.ubicacion?.latitud;
+            const lng = d.ubicacion?.longitud;
+            if (lat == null || lng == null) return;
 
-            if(!d.lat || !d.lng) return;
-
-            const marcador = L.marker([d.lat, d.lng])
+            const marcador = L.marker([lat, lng])
                 .addTo(map)
                 .bindPopup(`
                     <div class="min-w-[220px]">
                         <h3 class="font-bold text-lg">${d.titulo}</h3>
                         <p class="text-sm text-gray-600">${d.descripcion}</p>
-
                         <hr class="my-2">
-
-                        <p class="text-sm"><strong>Tipo:</strong> ${d.tipo}</p>
+                        <p class="text-sm"><strong>Tipo:</strong> ${d.tipo?.id || 'Sin tipo'}</p>
                         <p class="text-sm"><strong>Cantidad:</strong> ${d.cantidad}</p>
-
-                        <hr class="my-2">
-
-                        <p class="text-sm font-semibold text-dark">👤 Donador</p>
-                        <p class="text-sm">${d.donador.nombre}</p>
-                        <p class="text-sm">📞 ${d.donador.telefono}</p>
-
                         <button class="mt-3 w-full bg-primary hover:bg-green-600 text-white py-2 rounded-lg font-semibold transition">
-                            Solicitar donación
+                            Solicitar donacion
                         </button>
                     </div>
                 `);
@@ -119,36 +93,32 @@
         });
     }
 
-    //  FILTROS
-    document.querySelectorAll('.filtro').forEach(btn => {
-        btn.addEventListener('click', function(){
+    function coincideTipo(d, tipo) {
+        const tipoId = String(d.tipo?.id || '');
+        if (tipo === 'comida') return tipoId === '1';
+        if (tipo === 'ropa') return tipoId === '2';
+        if (tipo === 'medicamentos') return tipoId === '3';
+        if (tipo === 'otros') return tipoId === '4';
+        return true;
+    }
 
+    document.querySelectorAll('.filtro').forEach(btn => {
+        btn.addEventListener('click', function() {
             document.querySelectorAll('.filtro').forEach(b => {
-                b.classList.remove('bg-primary','text-white');
+                b.classList.remove('bg-primary', 'text-white');
                 b.classList.add('bg-gray-200');
             });
 
-            this.classList.add('bg-primary','text-white');
+            this.classList.add('bg-primary', 'text-white');
             this.classList.remove('bg-gray-200');
 
             const tipo = this.dataset.tipo;
-
-            if(tipo === "all"){
-                pintarMarcadores(donacionesGlobal);
-            } else {
-                const filtradas = donacionesGlobal.filter(d =>
-                    d.tipo?.toLowerCase() === tipo
-                );
-                pintarMarcadores(filtradas);
-            }
-
+            const filtradas = tipo === 'all' ? donacionesGlobal : donacionesGlobal.filter(d => coincideTipo(d, tipo));
+            pintarMarcadores(filtradas);
         });
     });
 
-    //  INICIAL
     cargarDonaciones();
-
 </script>
-
 </body>
 </html>

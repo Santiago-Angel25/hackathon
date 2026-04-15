@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Donador</title>
-
     <script src="https://cdn.tailwindcss.com"></script>
-
     <script>
         tailwind.config = {
             theme: {
@@ -20,88 +18,63 @@
             }
         }
     </script>
-
 </head>
-
 <body class="bg-[#F5F6FA] min-h-screen">
-
-<!-- NAVBAR -->
 <nav class="bg-dark text-white p-4 flex justify-between items-center">
     <h1 class="text-xl font-bold">DonaNeiva - Donador</h1>
-    <a href="../templates/landing.html" class="bg-red-500 px-4 py-2 rounded inline-block text-white text-center">
-        Cerrar sesión
+    <a href="/logout" class="bg-red-500 px-4 py-2 rounded inline-block text-white text-center">
+        Cerrar sesion
     </a>
 </nav>
 
 <div class="max-w-6xl mx-auto p-6">
-
-    <!-- BOTÓN PRINCIPAL -->
     <div class="mb-8 text-center">
-        <a href="../templates/publicar_donacion.html"
+        <a href="/publicar"
            class="bg-primary hover:bg-green-600 text-white px-8 py-4 rounded-xl text-lg font-bold transition">
-            + Realizar donación
+            + Realizar donacion
         </a>
     </div>
 
-    <!-- MIS DONACIONES -->
     <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
         <h2 class="text-2xl font-bold text-dark mb-4">Mis Donaciones</h2>
-
-        <div id="listaDonaciones" class="grid md:grid-cols-2 gap-4">
-            <!-- Se llena con JS -->
-        </div>
+        <div id="listaDonaciones" class="grid md:grid-cols-2 gap-4"></div>
     </div>
-
 </div>
 
 <script>
-
-    //  AQUÍ SE CONECTA CON TU BACKEND
     async function cargarDonaciones() {
         try {
-            const response = await fetch('/donador/donaciones'); // endpoint ejemplo
+            const response = await fetch('/donaciones');
             const data = await response.json();
-
             renderDonaciones(data);
-
         } catch (error) {
-            console.error("Error:", error);
+            console.error('Error:', error);
         }
     }
 
-    // PINTAR DONACIONES
     function renderDonaciones(donaciones) {
         const container = document.getElementById('listaDonaciones');
         container.innerHTML = '';
 
-        if(donaciones.length === 0){
-            container.innerHTML = `
-                <p class="text-gray-500 text-center col-span-full">
-                    No has publicado donaciones aún
-                </p>
-            `;
+        if (donaciones.length === 0) {
+            container.innerHTML = '<p class="text-gray-500 text-center col-span-full">No has publicado donaciones aun</p>';
             return;
         }
 
         donaciones.forEach(d => {
             const card = document.createElement('div');
+            card.className = 'border rounded-xl p-4 shadow hover:shadow-lg transition';
 
-            card.className = "border rounded-xl p-4 shadow hover:shadow-lg transition";
+            const ubicacion = d.ubicacion
+                ? `${d.ubicacion.latitud.toFixed(2)}, ${d.ubicacion.longitud.toFixed(2)}`
+                : 'Sin ubicacion';
 
             card.innerHTML = `
                 <h3 class="text-lg font-bold text-dark">${d.titulo}</h3>
                 <p class="text-gray-600 text-sm mb-2">${d.descripcion}</p>
-
-                <p class="text-sm">
-                    📦 Cantidad: ${d.cantidad}
-                </p>
-
-                <p class="text-sm">
-                    📍 ${d.lat.toFixed(2)}, ${d.lng.toFixed(2)}
-                </p>
-
-                <span class="inline-block mt-3 px-3 py-1 rounded-full text-sm font-semibold
-                    ${getColorEstado(d.estado)}">
+                <p class="text-sm">Cantidad: ${d.cantidad}</p>
+                <p class="text-sm">Ubicacion: ${ubicacion}</p>
+                <span class="inline-block mt-3 px-3 py-1 rounded-full text-sm font-semibold ${getColorEstado(d.estado)}">
                     ${d.estado}
                 </span>
             `;
@@ -110,18 +83,14 @@
         });
     }
 
-    //  COLORES DE ESTADO
-    function getColorEstado(estado){
-        if(estado === "DISPONIBLE") return "bg-green-100 text-green-700";
-        if(estado === "RESERVADO") return "bg-yellow-100 text-yellow-700";
-        if(estado === "ENTREGADO") return "bg-gray-200 text-gray-700";
-        return "bg-gray-100";
+    function getColorEstado(estado) {
+        if (estado === 'DISPONIBLE') return 'bg-green-100 text-green-700';
+        if (estado === 'RESERVADO') return 'bg-yellow-100 text-yellow-700';
+        if (estado === 'ENTREGADO') return 'bg-gray-200 text-gray-700';
+        return 'bg-gray-100';
     }
 
-    //  INICIAL
     cargarDonaciones();
-
 </script>
-
 </body>
 </html>

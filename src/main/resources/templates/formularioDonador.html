@@ -7,20 +7,14 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-
 <body class="bg-[#F5F6FA] min-h-screen flex items-center justify-center p-6">
-
 <div class="w-full max-w-3xl bg-white rounded-2xl shadow-2xl overflow-hidden">
-
-    <!-- HEADER -->
     <div class="bg-[#2ECC71] text-white p-6 text-center">
         <h1 class="text-3xl font-bold">Registro Donador</h1>
-        <p class="text-sm opacity-90">Únete y empieza a ayudar</p>
+        <p class="text-sm opacity-90">Unete y empieza a ayudar</p>
     </div>
 
-    <form class="p-8 space-y-6">
-
-        <!-- TIPO PERSONA -->
+    <form id="registroDonadorForm" class="p-8 space-y-6">
         <div>
             <label class="font-semibold text-[#2C3E50]">Tipo de persona</label>
             <div class="flex gap-6 mt-2">
@@ -30,110 +24,106 @@
                 </label>
                 <label class="flex items-center gap-2">
                     <input type="radio" name="tipoPersona" value="juridica">
-                    <span>Persona Jurídica</span>
+                    <span>Persona Juridica</span>
                 </label>
             </div>
         </div>
 
-        <!-- NOMBRE (REGEX) -->
         <div>
             <label class="font-semibold text-[#2C3E50]">Nombre completo / Empresa</label>
-            <input type="text"
-                   required
-                   pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ ]{3,80}$"
-                   title="Solo letras y espacios. Mínimo 3 caracteres."
-                   class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]"
-                   placeholder="Ej: Juan Pérez o Fundación XYZ">
+            <input id="nombre" type="text" required class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]"
+                   placeholder="Ej: Juan Perez o Fundacion XYZ">
         </div>
 
-        <!-- DOCUMENTO -->
         <div class="grid md:grid-cols-2 gap-4">
-
             <div>
                 <label class="font-semibold">Tipo de documento</label>
-                <select class="w-full mt-1 p-3 border rounded-xl" required>
+                <select id="tipoDocumento" class="w-full mt-1 p-3 border rounded-xl" required>
                     <option value="">Seleccione</option>
-                    <option>Cédula</option>
-                    <option>NIT</option>
-                    <option>Pasaporte</option>
+                    <option value="Cedula">Cedula</option>
+                    <option value="NIT">NIT</option>
+                    <option value="Pasaporte">Pasaporte</option>
                 </select>
             </div>
-
-            <!-- NÚMERO DOCUMENTO (REGEX) -->
             <div>
-                <label class="font-semibold">Número</label>
-                <input type="text"
-                       required
-                       pattern="^[0-9]{6,15}$"
-                       title="Solo números (6 a 15 dígitos)"
-                       class="w-full mt-1 p-3 border rounded-xl"
-                       placeholder="123456789">
+                <label class="font-semibold">Numero</label>
+                <input id="documento" type="text" required class="w-full mt-1 p-3 border rounded-xl" placeholder="123456789">
             </div>
         </div>
 
-        <!-- CONTACTO -->
         <div class="grid md:grid-cols-2 gap-4">
-
-            <!-- EMAIL (REGEX NATIVO HTML5) -->
             <div>
                 <label class="font-semibold">Correo</label>
-                <input type="email"
-                       required
-                       class="w-full mt-1 p-3 border rounded-xl"
-                       placeholder="correo@email.com">
+                <input id="email" type="email" required class="w-full mt-1 p-3 border rounded-xl" placeholder="correo@email.com">
             </div>
-
-            <!-- TELÉFONO (REGEX) -->
             <div>
-                <label class="font-semibold">Teléfono</label>
-                <input type="tel"
-                       required
-                       pattern="^[0-9]{10}$"
-                       title="Debe tener exactamente 10 números"
-                       class="w-full mt-1 p-3 border rounded-xl"
-                       placeholder="3001234567">
+                <label class="font-semibold">Telefono</label>
+                <input id="telefono" type="tel" required class="w-full mt-1 p-3 border rounded-xl" placeholder="3001234567">
             </div>
         </div>
 
-        <!-- DIRECCION (REGEX) -->
         <div>
-            <label class="font-semibold">Dirección</label>
-            <input type="text"
-                   required
-                   pattern="^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ#.,\-\s]{5,100}$"
-                   title="Dirección válida (mínimo 5 caracteres)"
-                   class="w-full mt-1 p-3 border rounded-xl"
-                   placeholder="Dirección de contacto">
+            <label class="font-semibold">Direccion</label>
+            <input id="direccion" type="text" required class="w-full mt-1 p-3 border rounded-xl" placeholder="Direccion de contacto">
         </div>
 
-        <!-- CONTRASEÑA (REGEX SEGURA) -->
         <div class="grid md:grid-cols-2 gap-4">
-
             <div>
-                <label class="font-semibold">Contraseña</label>
-                <input type="password"
-                       required
-                       pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,20}$"
-                       title="Debe tener letras y números (6-20 caracteres)"
-                       class="w-full mt-1 p-3 border rounded-xl">
+                <label class="font-semibold">Contrasena</label>
+                <input id="password" type="password" required class="w-full mt-1 p-3 border rounded-xl">
             </div>
-
             <div>
-                <label class="font-semibold">Confirmar contraseña</label>
-                <input type="password"
-                       required
-                       class="w-full mt-1 p-3 border rounded-xl">
+                <label class="font-semibold">Confirmar contrasena</label>
+                <input id="confirmPassword" type="password" required class="w-full mt-1 p-3 border rounded-xl">
             </div>
         </div>
 
-        <!-- BOTON -->
-        <a href="../templates/donador.html"
-           class="block text-center w-full bg-[#2ECC71] hover:bg-green-600 text-white font-bold p-3 rounded-xl transition">
-            Registrarse
-        </a>
+        <p id="mensajeRegistro" class="text-sm font-medium"></p>
 
+        <button type="submit" class="block text-center w-full bg-[#2ECC71] hover:bg-green-600 text-white font-bold p-3 rounded-xl transition">
+            Registrarse
+        </button>
     </form>
 </div>
 
+<script>
+    document.getElementById('registroDonadorForm').addEventListener('submit', async event => {
+        event.preventDefault();
+
+        const mensaje = document.getElementById('mensajeRegistro');
+        mensaje.textContent = '';
+        mensaje.className = 'text-sm font-medium';
+
+        const payload = {
+            nombre: document.getElementById('nombre').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            telefono: document.getElementById('telefono').value.trim(),
+            direccion: document.getElementById('direccion').value.trim(),
+            documento: `${document.getElementById('tipoDocumento').value}: ${document.getElementById('documento').value.trim()}`,
+            tipoPersona: document.querySelector('input[name="tipoPersona"]:checked')?.value || '',
+            password: document.getElementById('password').value,
+            confirmPassword: document.getElementById('confirmPassword').value,
+            rol: 'DONADOR'
+        };
+
+        try {
+            const response = await fetch('/auth/registro', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.message || 'No se pudo registrar el usuario');
+            }
+
+            window.location.href = '/login?registroExitoso';
+        } catch (error) {
+            mensaje.textContent = error.message;
+            mensaje.classList.add('text-red-500');
+        }
+    });
+</script>
 </body>
 </html>
