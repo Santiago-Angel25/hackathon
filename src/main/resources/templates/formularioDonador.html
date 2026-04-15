@@ -35,28 +35,37 @@
             </div>
         </div>
 
-        <!-- NOMBRE -->
+        <!-- NOMBRE (REGEX) -->
         <div>
             <label class="font-semibold text-[#2C3E50]">Nombre completo / Empresa</label>
-            <input type="text" required
+            <input type="text"
+                   required
+                   pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ ]{3,80}$"
+                   title="Solo letras y espacios. Mínimo 3 caracteres."
                    class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]"
                    placeholder="Ej: Juan Pérez o Fundación XYZ">
         </div>
 
         <!-- DOCUMENTO -->
         <div class="grid md:grid-cols-2 gap-4">
+
             <div>
                 <label class="font-semibold">Tipo de documento</label>
-                <select class="w-full mt-1 p-3 border rounded-xl">
+                <select class="w-full mt-1 p-3 border rounded-xl" required>
+                    <option value="">Seleccione</option>
                     <option>Cédula</option>
                     <option>NIT</option>
                     <option>Pasaporte</option>
                 </select>
             </div>
 
+            <!-- NÚMERO DOCUMENTO (REGEX) -->
             <div>
                 <label class="font-semibold">Número</label>
                 <input type="text"
+                       required
+                       pattern="^[0-9]{6,15}$"
+                       title="Solo números (6 a 15 dígitos)"
                        class="w-full mt-1 p-3 border rounded-xl"
                        placeholder="123456789">
             </div>
@@ -64,40 +73,55 @@
 
         <!-- CONTACTO -->
         <div class="grid md:grid-cols-2 gap-4">
+
+            <!-- EMAIL (REGEX NATIVO HTML5) -->
             <div>
                 <label class="font-semibold">Correo</label>
                 <input type="email"
+                       required
                        class="w-full mt-1 p-3 border rounded-xl"
                        placeholder="correo@email.com">
             </div>
 
+            <!-- TELÉFONO (REGEX) -->
             <div>
                 <label class="font-semibold">Teléfono</label>
                 <input type="tel"
+                       required
+                       pattern="^[0-9]{10}$"
+                       title="Debe tener exactamente 10 números"
                        class="w-full mt-1 p-3 border rounded-xl"
                        placeholder="3001234567">
             </div>
         </div>
 
-        <!-- DIRECCION -->
+        <!-- DIRECCION (REGEX) -->
         <div>
             <label class="font-semibold">Dirección</label>
             <input type="text"
+                   required
+                   pattern="^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ#.,\-\s]{5,100}$"
+                   title="Dirección válida (mínimo 5 caracteres)"
                    class="w-full mt-1 p-3 border rounded-xl"
                    placeholder="Dirección de contacto">
         </div>
 
-        <!-- CONTRASEÑA -->
+        <!-- CONTRASEÑA (REGEX SEGURA) -->
         <div class="grid md:grid-cols-2 gap-4">
+
             <div>
                 <label class="font-semibold">Contraseña</label>
                 <input type="password"
+                       required
+                       pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,20}$"
+                       title="Debe tener letras y números (6-20 caracteres)"
                        class="w-full mt-1 p-3 border rounded-xl">
             </div>
 
             <div>
                 <label class="font-semibold">Confirmar contraseña</label>
                 <input type="password"
+                       required
                        class="w-full mt-1 p-3 border rounded-xl">
             </div>
         </div>

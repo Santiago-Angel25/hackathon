@@ -20,57 +20,75 @@
 
     <form class="p-8 space-y-6">
 
-        <!-- NOMBRE -->
+        <!-- NOMBRE (REGEX) -->
         <div>
             <label class="font-semibold text-[#2C3E50]">Nombre completo</label>
             <input type="text"
+                   required
+                   pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ ]{3,80}$"
+                   title="Solo letras y espacios (mínimo 3 caracteres)"
                    class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]"
                    placeholder="Ej: María Pérez">
         </div>
 
-        <!-- DOCUMENTO -->
+        <!-- DOCUMENTO (REGEX) -->
         <div>
             <label class="font-semibold text-[#2C3E50]">Documento</label>
             <input type="text"
+                   required
+                   pattern="^[0-9]{6,15}$"
+                   title="Solo números (6 a 15 dígitos)"
                    class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]"
-                   placeholder="Cédula o identificación">
+                   placeholder="123456789">
         </div>
 
-        <!-- TELÉFONO -->
+        <!-- TELÉFONO (REGEX) -->
         <div>
             <label class="font-semibold text-[#2C3E50]">Teléfono</label>
             <input type="tel"
+                   required
+                   pattern="^[0-9]{10}$"
+                   title="Debe contener exactamente 10 números"
                    class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]"
                    placeholder="Ej: 3001234567">
         </div>
 
-        <!-- EMAIL -->
+        <!-- EMAIL (HTML5 NATIVO) -->
         <div>
             <label class="font-semibold text-[#2C3E50]">Correo electrónico</label>
             <input type="email"
+                   required
                    class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]"
                    placeholder="ejemplo@email.com">
         </div>
 
-        <!-- DIRECCIÓN -->
+        <!-- DIRECCIÓN (REGEX) -->
         <div>
             <label class="font-semibold text-[#2C3E50]">Dirección</label>
             <input type="text"
+                   required
+                   pattern="^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ#.,\-\s]{5,100}$"
+                   title="Dirección válida (mínimo 5 caracteres)"
                    class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]"
                    placeholder="Dirección de residencia">
         </div>
 
-        <!-- CONTRASEÑA -->
+        <!-- CONTRASEÑA (REGEX SEGURA) -->
         <div class="grid md:grid-cols-2 gap-4">
+
             <div>
                 <label class="font-semibold">Contraseña</label>
                 <input type="password"
+                       required
+                       pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,20}$"
+                       title="Debe tener letras y números (6-20 caracteres)"
                        class="w-full mt-1 p-3 border rounded-xl">
             </div>
 
             <div>
                 <label class="font-semibold">Confirmar contraseña</label>
                 <input type="password"
+                       required
                        class="w-full mt-1 p-3 border rounded-xl">
             </div>
         </div>
@@ -78,7 +96,7 @@
         <!-- TIPO DE NECESIDAD -->
         <div>
             <label class="font-semibold text-[#2C3E50]">¿Qué necesitas?</label>
-            <select
+            <select required
                     class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]">
                 <option value="">Seleccionar</option>
                 <option>Comida</option>
@@ -88,29 +106,21 @@
             </select>
         </div>
 
-        <!-- DESCRIPCIÓN -->
+        <!-- DESCRIPCIÓN (REGEX) -->
         <div>
             <label class="font-semibold text-[#2C3E50]">Descripción de la necesidad</label>
-            <textarea
-                    class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]"
-                    placeholder="Describe tu situación"></textarea>
+            <textarea required
+                      pattern=".{10,300}"
+                      title="Mínimo 10 caracteres"
+                      class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]"
+                      placeholder="Describe tu situación"></textarea>
         </div>
 
-        <!-- BOTONES -->
-        <div class="flex gap-3">
-
-            <div class="flex gap-3">
-
-                <div>
-                    <button type="submit"
-                            class="w-full bg-[#2ECC71] hover:bg-green-600 text-white font-bold p-3 rounded-xl transition">
-                        Registrarse
-                    </button>
-                </div>
-
-            </div>
-
-        </div>
+        <!-- BOTÓN -->
+        <button type="submit"
+                class="w-full bg-[#2ECC71] hover:bg-green-600 text-white font-bold p-3 rounded-xl transition">
+            Registrarse
+        </button>
 
     </form>
 </div>
