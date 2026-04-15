@@ -8,7 +8,27 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class WebController {
 
     @GetMapping("/")
-    public String index() {
-        return "index";
+    public String landing() {
+        return "landing";
+    }
+
+    @GetMapping("/login")
+    public String login() {
+        return "auth/login";
+    }
+
+    @GetMapping("/registro")
+    public String registro() {
+        return "auth/registro";
+    }
+
+    @GetMapping("/acceso-denegado")
+    public String accesoDenegado() {
+        return "compartidas/acceso-denegado";
+    }
+
+    @GetMapping("/ejemplo")
+    public String ejemplo() {
+        return "ejemplo-uso";
     }
 }

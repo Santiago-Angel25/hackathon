@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>DonApp - Registro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow">
+      <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <a href="/" class="font-bold text-xl">DonApp</a>
+        <nav class="space-x-4">
+          <a href="/" class="text-sm text-gray-600 hover:text-gray-900">Inicio</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container mx-auto p-6">
+      <div class="max-w-md mx-auto bg-white p-6 rounded shadow">
+        <h2 class="text-xl font-semibold mb-4">Registro</h2>
+        <form action="/register" method="post" class="space-y-4">
+          <div>
+            <label class="block text-sm">Nombre</label>
+            <input name="name" required class="w-full border rounded px-3 py-2" />
+          </div>
+          <div>
+            <label class="block text-sm">Email</label>
+            <input name="email" type="email" required class="w-full border rounded px-3 py-2" />
+          </div>
+          <div>
+            <label class="block text-sm">Contraseña</label>
+            <input name="password" type="password" required class="w-full border rounded px-3 py-2" />
+          </div>
+          <div>
+            <label class="block text-sm">Rol</label>
+            <select name="role" class="w-full border rounded px-3 py-2">
+              <option value="donor">Donador</option>
+              <option value="recipient">Beneficiario</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div class="text-right">
+            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Crear cuenta</button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </body>
+</html>

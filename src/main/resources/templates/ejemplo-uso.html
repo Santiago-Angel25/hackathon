@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejemplo de Uso - Neiva Solidaria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="bg-light">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+        <h1 class="text-4xl font-bold text-dark mb-8">
+            <i class="fas fa-book text-primary mr-3"></i>Guía de Uso - API y Utils
+        </h1>
+
+        <!-- Sección 1: Autenticación -->
+        <div class="card mb-8">
+            <div class="card-header">
+                <i class="fas fa-lock mr-2"></i>1. AUTENTICACIÓN
+            </div>
+            <div class="p-6">
+                <h3 class="font-bold text-lg mb-4 text-dark">Registrar Nuevo Usuario</h3>
+                <pre class="bg-gray-100 p-4 rounded overflow-x-auto mb-6"><code>// En auth/registro.html, el formulario hace esto:
+const respuesta = await registrar({
+    nombre: "Juan Pérez",
+    email: "juan@email.com",
+    telefono: "+57 300 123 4567",
+    password: "MiPassword123",
+    rol: "DONADOR"
+});
+
+// Si es exitoso, redirige a login
+// El backend debe crear el Usuario en BD</code></pre>
+
+                <h3 class="font-bold text-lg mb-4 text-dark">Login</h3>
+                <pre class="bg-gray-100 p-4 rounded overflow-x-auto mb-6"><code>// En auth/login.html, hace esto:
+const respuesta = await login("juan@email.com", "MiPassword123");
+
+// Respuesta esperada:
+{
+    token: "eyJhbGciOiJIUzUxMiIs...",
+    rol: "DONADOR",
+    id: 1
+}
+
+// Se guarda automáticamente en localStorage
+localStorage.getItem('token');  // Token JWT
+localStorage.getItem('rol');    // DONADOR | BENEFICIARIO | ADMIN</code></pre>
+
+                <h3 class="font-bold text-lg mb-4 text-dark">Verificar Autenticación</h3>
+                <pre class="bg-gray-100 p-4 rounded overflow-x-auto"><code>// Usar en cualquier página
+if (estaAutenticado()) {
+    console.log("Usuario autenticado");
+    console.log("Rol:", obtenerRol());
+} else {
+    window.location.href = '/login';
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- Sección 2: Donaciones -->
+        <div class="card mb-8">
+            <div class="card-header">
+                <i class="fas fa-gift mr-2"></i>2. OPERACIONES CON DONACIONES
+            </div>
+            <div class="p-6">
+                <h3 class="font-bold text-lg mb-4 text-dark">Obtener Todas las Donaciones</h3>
+                <pre class="bg-gray-100 p-4 rounded overflow-x-auto mb-6"><code>// Usado en landing.html para llenar el mapa
+const donaciones = await getDonaciones();
+
+// Respuesta (array):
+[
+    {
+        id: 1,
+        tipo: "comida",
+        descripcion: "Arroz de 5kg",
+        lat: 2.941761,
+        lng: -75.297825,
+        estado: "DISPONIBLE"
+    },
+    // ... más donaciones
+]</code></pre>
+
+                <h3 class="font-bold text-lg mb-4 text-dark">Crear Nueva Donación (Donador)</h3>
+                <pre class="bg-gray-100 p-4 rounded overflow-x-auto mb-6"><code>// Proteger: solo DONADOR
+protegerRuta('DONADOR');
+
+// Crear donación
+const nueva = await crearDonacion({
+    tipo: "ropa",
+    descripcion: "Camisetas manga larga talla M",
+    categoria: "ropa",
+    lat: 2.941761,
+    lng: -75.297825,
+    fotoUrl: "https://ejemplo.com/foto.jpg"
+});
+
+console.log("Donación creada:", nueva.id);</code></pre>
+
+                <h3 class="font-bold text-lg mb-4 text-dark">Cambiar Estado de Donación</h3>
+                <pre class="bg-gray-100 p-4 rounded overflow-x-auto mb-6"><code>// Donador: DISPONIBLE → RESERVADO → ENTREGADO
+await cambiarEstadoDonacion(1, "RESERVADO");
+await cambiarEstadoDonacion(1, "ENTREGADO");
+
+// El beneficiario ve esto reflejado en el mapa</code></pre>
+
+                <h3 class="font-bold text-lg mb-4 text-dark">Obtener Donaciones del Usuario</h3>
+                <pre class="bg-gray-100 p-4 rounded overflow-x-auto"><code>// En dashboard del donador
+const usuarioId = localStorage.getItem('usuario_id'); // Del login
+const misDonaciones = await getDonacionesPorUsuario(usuarioId);
+
+misDonaciones.forEach(donacion => {
+    console.log(`${donacion.tipo}: ${donacion.estado}`);
+});</code></pre>
+            </div>
+        </div>
+
+        <!-- Sección 3: Solicitudes -->
+        <div class="card mb-8">
+            <div class="card-header">
+                <i class="fas fa-handshake mr-2"></i>3. SOLICITUDES DE RECOGIDA
+            </div>
+            <div class="p-6">
+                <h3 class="font-bold text-lg mb-4 text-dark">Beneficiario: Crear Solicitud</h3>
+                <pre class="bg-gray-100 p-4 rounded overflow-x-auto mb-6"><code>// Proteger: solo BENEFICIARIO
+protegerRuta('BENEFICIARIO');
+
+// Solicitar una donación
+const solicitud = await crearSolicitud({
+    beneficiarioId: 5,  // ID del beneficiario
+    donacionId: 1,      // ID de la donación
+    notas: "¿Puedo recoger el viernes?"
+});
+
+console.log("Solicitud creada:", solicitud.id);
+console.log("Estado:", solicitud.estado); // PENDIENTE</code></pre>
+
+                <h3 class="font-bold text-lg mb-4 text-dark">Ver Solicitudes Recibidas (Donador)</h3>
+                <pre class="bg-gray-100 p-4 rounded overflow-x-auto mb-6"><code>// El donador ve solicitudes de sus donaciones
+const donadorId = 3;
+const solicitudes = await getSolicitudes(donadorId);
+
+solicitudes.forEach(s => {
+    console.log(`Beneficiario: ${s.beneficiario.nombre}`);
+    console.log(`Estado: ${s.estado}`); // PENDIENTE, ACEPTADA, ENTREGADA
+});</code></pre>
+
+                <h3 class="font-bold text-lg mb-4 text-dark">Actualizar Estado de Solicitud</h3>
+                <pre class="bg-gray-100 p-4 rounded overflow-x-auto"><code>// Donador acepta o rechaza
+await cambiarEstadoSolicitud(1, "ACEPTADA");
+// O
+await cambiarEstadoSolicitud(1, "RECHAZADA");
+
+// Cuando es ENTREGADA, la donación cambia a ENTREGADO</code></pre>
+            </div>
+        </div>
+
+        <!-- Sección 4: Utilidades Frontend -->
+        <div class="card mb-8">
+            <div class="card-header">
+                <i class="fas fa-wand-magic-sparkles mr-2"></i>4. UTILIDADES Y COMPONENTES
+            </div>
+            <div class="p-6">
+                <h3 class="font-bold text-lg mb-4 text-dark">Notificaciones</h3>
+                <pre class="bg-gray-100 p-4 rounded overflow-x-auto mb-6"><code>// Mostrar notificación (desaparece en 5s)
+mostrarNotificacion('¡Donación creada!', 'success');
+
+// Otros tipos
+mostrarNotificacion('Error al enviar', 'error', 3000);
+mostrarNotificacion('Operación completada', 'success', 2000);
+mostrarNotificacion('Advertencia', 'warning', 5000);
+mostrarNotificacion('Información', 'info', 0); // No desaparece</code></pre>
+
+                <h3 class="font-bold text-lg mb-4 text-dark">Modales de Confirmación</h3>
+                <pre class="bg-gray-100 p-4 rounded overflow-x-auto mb-6"><code>// Pedir confirmación antes de eliminar
+confirmar(
+    '¿Eliminar donación?',
+    'Esta acción no se puede deshacer',
+    async () => {
+        await eliminarDonacion(1);
+        mostrarNotificacion('Eliminada', 'success');
+    },
+    'Sí, eliminar'
+);</code></pre>
+
+                <h3 class="font-bold text-lg mb-4 text-dark">Formateo de Fechas</h3>
+                <pre class="bg-gray-100 p-4 rounded overflow-x-auto mb-6"><code>// Múltiples formatos
+formatearFecha(new Date(), 'DD/MM/YYYY');
+// → "15/04/2026"
+
+formatearFecha(new Date(), 'DD/MM/YYYY HH:MM');
+// → "15/04/2026 14:30"
+
+formatearFecha(new Date(), 'YYYY-MM-DD');
+// → "2026-04-15"
+
+tiempoTranscurrido(new Date(Date.now() - 3600000));
+// → "Hace 1 hora"</code></pre>
+
+                <h3 class="font-bold text-lg mb-4 text-dark">Validaciones</h3>
+                <pre class="bg-gray-100 p-4 rounded overflow-x-auto mb-6"><code>// Validar email
+if (validarEmail('usuario@email.com')) {
+    console.log('Email válido');
+}
+
+// Validar teléfono
+if (validarTelefono('+57 300 123 4567')) {
+    console.log('Teléfono válido');
+}
+
+// Sanitizar HTML (prevenir XSS)
+const textoSeguro = sanitizar('<script>alert("XSS")</script>');</code></pre>
+
+                <h3 class="font-bold text-lg mb-4 text-dark">Colores Dinámicos</h3>
+                <pre class="bg-gray-100 p-4 rounded overflow-x-auto"><code>// Obtener color por estado
+const colorEstado = getColorPorEstado('DISPONIBLE');
+// → '#2ecc71' (verde)
+
+// Obtener ícono por categoría
+const icono = getIconoPorCategoria('comida');
+// → 'fa-utensils'
+
+// Obtener color por categoría
+const color = getColorPorCategoria('ropa');
+// → '#3498db' (azul)</code></pre>
+            </div>
+        </div>
+
+        <!-- Sección 5: Estructura Base HTML -->
+        <div class="card mb-8">
+            <div class="card-header">
+                <i class="fas fa-code mr-2"></i>5. ESTRUCTURA PARA NUEVAS PÁGINAS
+            </div>
+            <div class="p-6">
+                <pre class="bg-gray-100 p-4 rounded overflow-x-auto"><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="es"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Mi Página - Neiva Solidaria&lt;/title&gt;
+
+    &lt;!-- Tailwind --&gt;
+    &lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;
+
+    &lt;!-- Font Awesome --&gt;
+    &lt;link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"&gt;
+
+    &lt;!-- CSS Global --&gt;
+    &lt;link rel="stylesheet" href="/css/styles.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;!-- Contenido --&gt;
+
+    &lt;!-- Scripts --&gt;
+    &lt;script src="/js/api.js"&gt;&lt;/script&gt;
+    &lt;script src="/js/utils.js"&gt;&lt;/script&gt;
+    &lt;script&gt;
+        // Proteger ruta
+        protegerRuta('DONADOR'); // O ['DONADOR', 'ADMIN']
+
+        // Tu código aquí
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+            </div>
+        </div>
+
+        <!-- Sección 6: Flujo Completo -->
+        <div class="card mb-8">
+            <div class="card-header">
+                <i class="fas fa-diagram-project mr-2"></i>6. FLUJO COMPLETO DE USUARIO
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="bg-blue-50 border-l-4 border-blue-400 p-4">
+                    <p class="font-bold text-blue-900">1. Usuario Anónimo</p>
+                    <p class="text-blue-700">Accede a "/" → ve Landing → puede ver mapa y donaciones</p>
+                </div>
+
+                <div class="bg-purple-50 border-l-4 border-purple-400 p-4">
+                    <p class="font-bold text-purple-900">2. Se Registra como DONADOR</p>
+                    <p class="text-purple-700">POST /api/auth/registro → Token guardado → Redirige a /donador/dashboard</p>
+                </div>
+
+                <div class="bg-green-50 border-l-4 border-green-400 p-4">
+                    <p class="font-bold text-green-900">3. Donador Crea Donación</p>
+                    <p class="text-green-700">POST /api/donaciones → Se muestra en el mapa → Estado DISPONIBLE</p>
+                </div>
+
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+                    <p class="font-bold text-yellow-900">4. Beneficiario Solicita</p>
+                    <p class="text-yellow-700">POST /api/solicitudes → Notificación al donador → Estado PENDIENTE</p>
+                </div>
+
+                <div class="bg-orange-50 border-l-4 border-orange-400 p-4">
+                    <p class="font-bold text-orange-900">5. Donador Acepta</p>
+                    <p class="text-orange-700">PATCH /api/solicitudes/{id}/estado → ACEPTADA → Donación → RESERVADO</p>
+                </div>
+
+                <div class="bg-red-50 border-l-4 border-red-400 p-4">
+                    <p class="font-bold text-red-900">6. Coordinan Entrega</p>
+                    <p class="text-red-700">Mensajes, teléfono → Se reúnen → Intercambio</p>
+                </div>
+
+                <div class="bg-green-50 border-l-4 border-green-400 p-4">
+                    <p class="font-bold text-green-900">7. Completar Solicitud</p>
+                    <p class="text-green-700">PATCH /api/solicitudes/{id}/estado → ENTREGADA → Donación → ENTREGADO</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-12">
+            <a href="/" class="btn-primary text-center block">
+                <i class="fas fa-home mr-2"></i>Ver Landing
+            </a>
+            <a href="/login" class="btn-secondary text-center block">
+                <i class="fas fa-sign-in-alt mr-2"></i>Login
+            </a>
+            <a href="/registro" class="btn-primary text-center block">
+                <i class="fas fa-user-plus mr-2"></i>Registrarse
+            </a>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-12 text-center text-gray-500 border-t pt-8">
+            <p>📖 Esta página es solo una referencia. Consulta los archivos reales en el código fuente.</p>
+            <p class="mt-2">💡 Abre la consola del navegador (F12) para ver logs de depuración</p>
+        </div>
+    </div>
+
+    <script>
+        // Ejemplo: Mostrar datos en consola
+        console.log('📚 EJEMPLOS DISPONIBLES:');
+        console.log('1. estaAutenticado() - Verificar si estás logueado');
+        console.log('2. obtenerRol() - Tu rol actual');
+        console.log('3. await getDonaciones() - Obtener todas las donaciones');
+        console.log('4. mostrarNotificacion("Hola", "success") - Mostrar alerta');
+        console.log('5. formatearFecha(new Date()) - Formatear fecha');
+        console.log('Intenta escribir en la consola: await getDonaciones()');
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>DonApp - Panel Beneficiario</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>#map { height: 520px; }</style>
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow">
+      <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <a href="/" class="font-bold text-xl">DonApp</a>
+        <nav class="space-x-4">
+          <a href="/profile" class="text-sm text-gray-600 hover:text-gray-900">Perfil</a>
+          <a href="/notifications" class="text-sm text-gray-600 hover:text-gray-900">Notificaciones</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container mx-auto p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-semibold">Donaciones activas</h2>
+        <div class="flex items-center space-x-3">
+          <select id="filter" class="border rounded px-3 py-2">
+            <option value="all">Todos</option>
+            <option value="comida">Comida</option>
+            <option value="ropa">Ropa</option>
+            <option value="higiene">Higiene</option>
+          </select>
+          <a href="/register" class="text-sm text-gray-600">Reportar donación</a>
+        </div>
+      </div>
+
+      <div class="bg-white rounded shadow p-4 mb-4">
+        <div id="map"></div>
+      </div>
+
+      <div class="bg-white rounded shadow p-4">
+        <h3 class="font-medium">Lista</h3>
+        <ul class="divide-y">
+          <li class="py-3 flex justify-between items-center">
+            <div>
+              <div class="font-semibold">Pan y conservas</div>
+              <div class="text-sm text-gray-600">Comida — 2 km</div>
+            </div>
+            <div class="space-x-2">
+              <a href="/donation/1" class="text-blue-600">Ver</a>
+              <button class="bg-green-600 text-white px-3 py-1 rounded">Solicitar recogida</button>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+      const map = L.map('map').setView([40.4168, -3.7038], 13);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+      const markers = [
+        { id: 1, lat: 40.4168, lon: -3.7038, title: 'Pan y conservas', category: 'comida' }
+      ];
+      markers.forEach(m => L.marker([m.lat, m.lon]).addTo(map).bindPopup(m.title));
+
+      // simple filter (client-side example)
+      document.getElementById('filter').addEventListener('change', function(e){
+        // in real app, request filtered data from server
+        console.log('Filter to', e.target.value);
+      });
+    </script>
+  </body>
+</html>

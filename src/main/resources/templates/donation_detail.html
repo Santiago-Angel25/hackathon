@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>DonApp - Donación</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>#map { height: 240px; }</style>
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow">
+      <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <a href="/" class="font-bold text-xl">DonApp</a>
+      </div>
+    </header>
+
+    <main class="container mx-auto p-6">
+      <div class="bg-white rounded shadow p-4 max-w-3xl mx-auto">
+        <h2 class="text-xl font-semibold">Caja de alimentos</h2>
+        <div class="text-sm text-gray-600 mb-4">Comida — 2 km — estado: disponible</div>
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <img src="/static/placeholder.png" alt="foto" class="w-full h-48 object-cover rounded" />
+          </div>
+          <div>
+            <h3 class="font-medium">Descripción</h3>
+            <p class="text-sm text-gray-700">Contiene alimentos no perecederos, en buen estado.</p>
+            <div id="map" class="mt-4"></div>
+            <div class="mt-4">
+              <button class="bg-green-600 text-white px-4 py-2 rounded">Solicitar recogida</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+      const map = L.map('map').setView([40.4168, -3.7038], 13);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+      L.marker([40.4168, -3.7038]).addTo(map);
+    </script>
+  </body>
+</html>
