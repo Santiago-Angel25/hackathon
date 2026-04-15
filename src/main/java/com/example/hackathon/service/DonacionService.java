@@ -70,7 +70,7 @@ public class DonacionService {
         return repo.save(existente);
     }
 
-    // 📌 Eliminar registro
+
     public void eliminar(Long id) {
 
         if (!repo.existsById(id)) {

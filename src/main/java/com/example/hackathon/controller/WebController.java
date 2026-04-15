@@ -9,26 +9,41 @@ public class WebController {
 
     @GetMapping("/")
     public String landing() {
-        return "landing";
+        return "landing"; // templates/landing.html
     }
 
     @GetMapping("/login")
     public String login() {
-        return "auth/login";
+        return "login"; // templates/login.html
     }
 
     @GetMapping("/registro")
     public String registro() {
-        return "auth/registro";
+        return "registro"; // templates/registro.html
+    }
+
+    @GetMapping("/profile")
+    public String profile() {
+        return "profile"; // templates/profile.html
+    }
+
+    @GetMapping("/publicar")
+    public String publicar() {
+        return "publicar_donacion";
+    }
+
+    @GetMapping("/donador")
+    public String donador() {
+        return "formularioDonador";
+    }
+
+    @GetMapping("/beneficiario")
+    public String beneficiario() {
+        return "formularioBeneficiario";
     }
 
     @GetMapping("/acceso-denegado")
     public String accesoDenegado() {
         return "compartidas/acceso-denegado";
-    }
-
-    @GetMapping("/ejemplo")
-    public String ejemplo() {
-        return "ejemplo-uso";
     }
 }
