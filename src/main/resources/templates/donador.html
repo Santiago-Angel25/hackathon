@@ -24,7 +24,7 @@
     <h1 class="text-xl font-bold">DonaNeiva - Donador</h1>
     <div class="flex gap-3">
         <a href="/" class="bg-white/10 px-4 py-2 rounded inline-block text-white text-center">
-            Ver Landing
+            Ir a inicio
         </a>
         <a href="/logout" class="bg-red-500 px-4 py-2 rounded inline-block text-white text-center">
             Cerrar sesion
@@ -85,7 +85,7 @@
 
     async function cargarDonaciones() {
         try {
-            const response = await fetch('/donaciones');
+            const response = await fetch('/donaciones/mis');
             const data = await response.json();
             renderDonaciones(data);
         } catch (error) {
@@ -118,10 +118,33 @@
                 <span class="inline-block mt-3 px-3 py-1 rounded-full text-sm font-semibold ${getColorEstado(d.estado)}">
                     ${getTextoEstado(d.estado)}
                 </span>
+                <button
+                    class="mt-4 w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-lg transition"
+                    onclick="cancelarDonacion(${d.id})"
+                >
+                    Cancelar donacion
+                </button>
             `;
 
             container.appendChild(card);
         });
+    }
+
+    async function cancelarDonacion(id) {
+        const confirmar = window.confirm('Esta donacion se eliminara de tu panel y dejara de estar disponible. Deseas continuar?');
+        if (!confirmar) return;
+
+        try {
+            const response = await fetch(`/donaciones/${id}`, { method: 'DELETE' });
+            if (!response.ok) {
+                const data = await response.json().catch(() => ({}));
+                throw new Error(data.message || 'No se pudo cancelar la donacion');
+            }
+            await cargarDonaciones();
+            await cargarEstadisticas();
+        } catch (error) {
+            alert(error.message);
+        }
     }
 
     function getColorEstado(estado) {

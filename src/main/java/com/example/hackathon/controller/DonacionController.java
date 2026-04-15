@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
+import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,6 +38,12 @@ public class DonacionController {
         return ResponseEntity.ok(service.listar());
     }
 
+    @GetMapping("/mis")
+    @Operation(summary = "Obtener las donaciones del donador autenticado")
+    public ResponseEntity<List<Donacion>> listarMisDonaciones(Authentication authentication) {
+        return ResponseEntity.ok(service.listarPorDonador(authentication.getName()));
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "Obtener donacion por ID")
     public ResponseEntity<Donacion> obtenerPorId(@PathVariable Long id) {
@@ -47,8 +54,8 @@ public class DonacionController {
 
     @PostMapping
     @Operation(summary = "Crear nueva donacion")
-    public ResponseEntity<Donacion> guardar(@Valid @RequestBody DonacionDTO donacion) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.guardar(donacion));
+    public ResponseEntity<Donacion> guardar(@Valid @RequestBody DonacionDTO donacion, Authentication authentication) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.guardar(donacion, authentication.getName()));
     }
 
     @PutMapping("/{id}")
@@ -78,8 +85,8 @@ public class DonacionController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar donacion")
-    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        service.eliminar(id);
+    public ResponseEntity<Void> eliminar(@PathVariable Long id, Authentication authentication) {
+        service.eliminarPropia(id, authentication.getName());
         return ResponseEntity.noContent().build();
     }
 }

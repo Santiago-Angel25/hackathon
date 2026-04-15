@@ -4,11 +4,14 @@ import com.example.hackathon.dto.DonacionDTO;
 import com.example.hackathon.exception.ResourceNotFoundException;
 import com.example.hackathon.model.Donacion;
 import com.example.hackathon.model.EstadoDonacion;
+import com.example.hackathon.model.RolUsuario;
 import com.example.hackathon.model.TipoDonacion;
 import com.example.hackathon.model.Ubicacion;
+import com.example.hackathon.model.Usuario;
 import com.example.hackathon.repository.DonacionRepository;
 import com.example.hackathon.repository.TipoDonacionRepository;
 import com.example.hackathon.repository.UbicacionRepository;
+import com.example.hackathon.repository.UsuarioRepository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
@@ -19,26 +22,30 @@ public class DonacionService {
     private final DonacionRepository repo;
     private final UbicacionRepository ubicacionRepository;
     private final TipoDonacionRepository tipoDonacionRepository;
-    private final MetricasService metricasService;
+    private final UsuarioRepository usuarioRepository;
 
     public DonacionService(
             DonacionRepository repo,
             UbicacionRepository ubicacionRepository,
             TipoDonacionRepository tipoDonacionRepository,
-            MetricasService metricasService
+            UsuarioRepository usuarioRepository
     ) {
         this.repo = repo;
         this.ubicacionRepository = ubicacionRepository;
         this.tipoDonacionRepository = tipoDonacionRepository;
-        this.metricasService = metricasService;
+        this.usuarioRepository = usuarioRepository;
     }
 
     public List<Donacion> listar() {
-        return repo.findAll();
+        return repo.findByEstadoNot(EstadoDonacion.ENTREGADO);
     }
 
     public Optional<Donacion> obtenerPorId(Long id) {
         return repo.findById(id);
+    }
+
+    public List<Donacion> listarPorDonador(String email) {
+        return repo.findByDonadorEmailIgnoreCaseAndEstadoNot(email, EstadoDonacion.ENTREGADO);
     }
 
     public Donacion guardar(Donacion donacion) {
@@ -46,12 +53,13 @@ public class DonacionService {
         return repo.save(donacion);
     }
 
-    public Donacion guardar(DonacionDTO donacionDto) {
+    public Donacion guardar(DonacionDTO donacionDto, String emailDonador) {
         validarCamposBasicos(
                 donacionDto.getTitulo(),
                 donacionDto.getDescripcion(),
                 donacionDto.getCantidad()
         );
+        Usuario donador = obtenerDonadorAutenticado(emailDonador);
 
         Ubicacion ubicacion = new Ubicacion();
         ubicacion.setLatitud(donacionDto.getLatitud());
@@ -81,6 +89,7 @@ public class DonacionService {
         donacion.setDescripcion(donacionDto.getDescripcion().trim());
         donacion.setCantidad(donacionDto.getCantidad());
         donacion.setTipo(tipo);
+        donacion.setDonador(donador);
         donacion.setUbicacion(ubicacionGuardada);
         donacion.setEstado(EstadoDonacion.DISPONIBLE);
 
@@ -150,16 +159,18 @@ public class DonacionService {
             throw new IllegalArgumentException("Solo se puede marcar como recogida una donacion reservada");
         }
 
-        metricasService.registrarRecogida();
-        repo.delete(donacion);
+        donacion.setEstado(EstadoDonacion.ENTREGADO);
+        repo.save(donacion);
     }
 
-    public void eliminar(Long id) {
-        if (!repo.existsById(id)) {
-            throw new ResourceNotFoundException("Donacion con ID " + id + " no encontrada");
-        }
+    public void eliminarPropia(Long id, String emailDonador) {
+        Donacion donacion = repo.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Donacion con ID " + id + " no encontrada")
+                );
 
-        repo.deleteById(id);
+        validarPropietario(donacion, emailDonador);
+        repo.delete(donacion);
     }
 
     private void validarCamposBasicos(String titulo, String descripcion, Integer cantidad) {
@@ -173,6 +184,24 @@ public class DonacionService {
 
         if (cantidad == null || cantidad <= 0) {
             throw new IllegalArgumentException("La cantidad debe ser mayor a cero");
+        }
+    }
+
+    private Usuario obtenerDonadorAutenticado(String emailDonador) {
+        Usuario usuario = usuarioRepository.findByEmail(emailDonador.trim().toLowerCase())
+                .orElseThrow(() -> new IllegalArgumentException("Usuario autenticado no encontrado"));
+
+        if (usuario.getRol() != RolUsuario.DONADOR) {
+            throw new IllegalArgumentException("Solo los donadores pueden publicar donaciones");
+        }
+
+        return usuario;
+    }
+
+    private void validarPropietario(Donacion donacion, String emailDonador) {
+        String propietario = donacion.getDonador() != null ? donacion.getDonador().getEmail() : null;
+        if (propietario == null || !propietario.equalsIgnoreCase(emailDonador)) {
+            throw new IllegalArgumentException("No puedes modificar una donacion que no te pertenece");
         }
     }
 }

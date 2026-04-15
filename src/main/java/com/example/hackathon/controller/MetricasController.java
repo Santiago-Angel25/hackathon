@@ -1,6 +1,5 @@
 package com.example.hackathon.controller;
 
-import com.example.hackathon.service.DonacionService;
 import com.example.hackathon.service.MetricasService;
 import java.util.Map;
 import org.springframework.http.ResponseEntity;
@@ -13,15 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class MetricasController {
 
     private final MetricasService metricasService;
-    private final DonacionService donacionService;
 
-    public MetricasController(MetricasService metricasService, DonacionService donacionService) {
+    public MetricasController(MetricasService metricasService) {
         this.metricasService = metricasService;
-        this.donacionService = donacionService;
     }
 
     @GetMapping
     public ResponseEntity<Map<String, Long>> obtenerMetricas() {
-        return ResponseEntity.ok(metricasService.obtenerMetricas((long) donacionService.listar().size()));
+        return ResponseEntity.ok(metricasService.obtenerMetricas());
     }
 }

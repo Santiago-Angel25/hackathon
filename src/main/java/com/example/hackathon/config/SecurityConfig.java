@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import org.springframework.http.HttpMethod;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -15,6 +16,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
@@ -30,10 +32,12 @@ import org.springframework.security.web.savedrequest.SavedRequest;
 public class SecurityConfig {
 
     private final UsuarioRepository usuarioRepository;
+    private final AppRestartSessionFilter appRestartSessionFilter;
     private final RequestCache requestCache = new HttpSessionRequestCache();
 
-    public SecurityConfig(UsuarioRepository usuarioRepository) {
+    public SecurityConfig(UsuarioRepository usuarioRepository, AppRestartSessionFilter appRestartSessionFilter) {
         this.usuarioRepository = usuarioRepository;
+        this.appRestartSessionFilter = appRestartSessionFilter;
     }
 
     @Bean
@@ -86,11 +90,15 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.GET, "/donaciones/mis", "/api/donaciones/mis").hasRole("DONADOR")
+                        .requestMatchers(HttpMethod.POST, "/donaciones", "/api/donaciones").hasRole("DONADOR")
+                        .requestMatchers(HttpMethod.DELETE, "/donaciones/*", "/api/donaciones/*").hasRole("DONADOR")
                         .requestMatchers(
                                 "/", "/login", "/registro", "/acceso-denegado", "/ejemplo",
                                 "/publicar", "/donador", "/beneficiario", "/auth/registro"
                         ).permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/h2-console/**").permitAll()
+                        .requestMatchers("/api/estadisticas/**").permitAll()
                         .requestMatchers("/api/donaciones/**", "/donaciones/**").permitAll()
                         .requestMatchers("/donador/dashboard").hasRole("DONADOR")
                         .requestMatchers("/beneficiario/dashboard").hasRole("BENEFICIARIO")
@@ -110,8 +118,11 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
                         .permitAll()
-                );
+                )
+                .addFilterAfter(appRestartSessionFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
