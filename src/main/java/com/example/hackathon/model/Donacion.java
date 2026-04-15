@@ -1,8 +1,10 @@
 package com.example.hackathon.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
+@Data
 @Table(name = "donaciones")
 public class Donacion {
 

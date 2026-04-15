@@ -34,25 +34,42 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf()
-                    .disable()
-                .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeHttpRequests()
-                    // Rutas públicas - Acceso sin autenticación
-                    .requestMatchers("/", "/login", "/registro", "/acceso-denegado", "/ejemplo").permitAll()
-                    .requestMatchers("/donaciones", "/donaciones/**").permitAll()
-                    .requestMatchers("/swagger-ui.html", "/v3/api-docs", "/v3/api-docs/**").permitAll()
-                    .requestMatchers("/css/**", "/js/**", "/static/**").permitAll()
-                    // Admin - Requiere rol ADMIN
-                    .requestMatchers("/admin/**").hasRole("ADMIN")
-                    // Auth endpoints
-                    .requestMatchers("/auth/**").permitAll()
-                    // Cualquier otra ruta requiere autenticación
-                    .anyRequest().authenticated()
-                .and()
-                .httpBasic();
+
+                .csrf(csrf ->{})
+
+
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                )
+
+                .authorizeHttpRequests(auth -> auth
+                        // 🔓 públicas
+                        .requestMatchers("/", "/login", "/registro", "/acceso-denegado", "/ejemplo").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/donaciones/**").permitAll()
+
+                        // 🔐 admin
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+
+                        // 🔓 auth
+                        .requestMatchers("/auth/**").permitAll()
+
+                        // 🔒 todo lo demás
+                        .anyRequest().authenticated()
+                )
+
+                // 🔐 login con formulario Thymeleaf
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/", true)
+                        .permitAll()
+                )
+
+                // 🔓 logout
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/login?logout")
+                        .permitAll()
+                );
 
         return http.build();
     }
