@@ -155,7 +155,7 @@
                         <i class="fas fa-users text-secondary mr-2"></i>¿Cuál es tu Rol?
                     </h2>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <!-- Donador -->
                         <div
                             class="role-card p-6 border-2 border-gray-300 rounded-lg text-center hover:border-primary hover:shadow-lg transition"
@@ -178,15 +178,7 @@
                             <input type="radio" name="rol" value="BENEFICIARIO" class="hidden" />
                         </div>
 
-                        <!-- Admin (solo lectura) -->
-                        <div
-                            class="p-6 border-2 border-gray-300 rounded-lg text-center opacity-50 cursor-not-allowed"
-                            title="Solo accesible con autorización"
-                        >
-                            <i class="fas fa-shield text-4xl text-dark mb-3 block"></i>
-                            <h3 class="font-bold text-dark mb-2">Administrador</h3>
-                            <p class="text-sm text-gray-600 mb-3">Solo por invitación</p>
-                        </div>
+
                     </div>
 
                     <input type="hidden" id="rol-input" name="rol" />
