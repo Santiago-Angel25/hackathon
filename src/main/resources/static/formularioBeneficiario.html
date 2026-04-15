@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Beneficiario - DonaNeiva</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-[#F5F6FA] min-h-screen flex items-center justify-center p-6">
+
+<div class="w-full max-w-3xl bg-white rounded-2xl shadow-2xl overflow-hidden">
+
+    <!-- HEADER -->
+    <div class="bg-[#2ECC71] text-white p-6 text-center">
+        <h1 class="text-3xl font-bold">DonaNeiva</h1>
+        <p class="text-sm opacity-90">Registro de beneficiario</p>
+    </div>
+
+    <form class="p-8 space-y-6">
+
+        <!-- NOMBRE -->
+        <div>
+            <label class="font-semibold text-[#2C3E50]">Nombre completo</label>
+            <input type="text"
+                   class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]"
+                   placeholder="Ej: María Pérez">
+        </div>
+
+        <!-- DOCUMENTO -->
+        <div>
+            <label class="font-semibold text-[#2C3E50]">Documento</label>
+            <input type="text"
+                   class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]"
+                   placeholder="Cédula o identificación">
+        </div>
+
+        <!-- TELÉFONO -->
+        <div>
+            <label class="font-semibold text-[#2C3E50]">Teléfono</label>
+            <input type="tel"
+                   class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]"
+                   placeholder="Ej: 3001234567">
+        </div>
+
+        <!-- EMAIL -->
+        <div>
+            <label class="font-semibold text-[#2C3E50]">Correo electrónico</label>
+            <input type="email"
+                   class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]"
+                   placeholder="ejemplo@email.com">
+        </div>
+
+        <!-- DIRECCIÓN -->
+        <div>
+            <label class="font-semibold text-[#2C3E50]">Dirección</label>
+            <input type="text"
+                   class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]"
+                   placeholder="Dirección de residencia">
+        </div>
+
+        <!-- TIPO DE NECESIDAD -->
+        <div>
+            <label class="font-semibold text-[#2C3E50]">¿Qué necesitas?</label>
+            <select
+                    class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]">
+                <option value="">Seleccionar</option>
+                <option>Comida</option>
+                <option>Ropa</option>
+                <option>Medicamentos</option>
+                <option>Otros</option>
+            </select>
+        </div>
+
+        <!-- DESCRIPCIÓN -->
+        <div>
+            <label class="font-semibold text-[#2C3E50]">Descripción de la necesidad</label>
+            <textarea
+                    class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]"
+                    placeholder="Describe tu situación"></textarea>
+        </div>
+
+        <!-- BOTONES -->
+        <div class="flex gap-3">
+
+            <div class="flex gap-3">
+
+                <div>
+                    <button type="submit"
+                            class="w-full bg-[#2ECC71] hover:bg-green-600 text-white font-bold p-3 rounded-xl transition">
+                        Registrarse
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+</div>
+
+</body>
+</html>
