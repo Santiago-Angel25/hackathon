@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neiva Solidaria - Compartir es Cuidar</title>
+    <title>DonaNeiva</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -44,13 +44,13 @@
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center gap-2">
                     <i class="fas fa-hand-holding-heart text-primary text-2xl"></i>
-                    <span class="text-2xl font-bold">Neiva Solidaria</span>
+                    <span class="text-2xl font-bold">DonaNeiva</span>
                 </div>
                 <div class="flex gap-4">
                     <a href="/login" class="hover:text-primary transition">
                         <i class="fas fa-sign-in-alt mr-2"></i>Ingresar
                     </a>
-                    <a href="/registro" class="bg-primary hover:bg-green-600 text-white px-6 py-2 rounded-lg font-semibold transition">
+                    <a href="#seccionRegistro" class="bg-primary hover:bg-green-600 text-white px-6 py-2 rounded-lg font-semibold transition">
                         Registrarse
                     </a>
                 </div>
@@ -70,7 +70,7 @@
                         Compartir es <span class="text-primary">Cuidar</span>
                     </h1>
                     <p class="text-xl text-gray-300 mb-8">
-                        En Neiva Solidaria conectamos donantes con personas que necesitan. Juntos construimos una comunidad más justa y solidaria.
+                        En DonaNeiva conectamos donantes con personas que necesitan. Juntos construimos una comunidad más justa y solidaria.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4">
                         <a href="#mapa" class="bg-primary hover:bg-green-600 text-white px-8 py-4 rounded-lg font-bold text-lg transition transform hover:scale-105 inline-block text-center">
@@ -157,7 +157,7 @@
     </section>
 
     <!-- Roles Section -->
-    <section class="py-20 bg-gradient-to-b from-light to-white">
+    <section id="seccionRegistro" class="py-20 bg-gradient-to-b from-light to-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
                 <h2 class="text-4xl font-bold text-dark mb-4">
@@ -166,13 +166,13 @@
                 <p class="text-xl text-gray-600">Elige cómo quieres contribuir a nuestra comunidad</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
                 <!-- Donador -->
-                <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 overflow-hidden">
+                <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 overflow-hidden flex flex-col h-[500px]">
                     <div class="bg-primary h-24 flex items-center justify-center">
                         <i class="fas fa-gift text-white text-5xl"></i>
                     </div>
-                    <div class="p-8">
+                    <div class="p-8 flex flex-col justify-between h-full">
                         <h3 class="text-2xl font-bold text-dark mb-4">Soy Donador</h3>
                         <ul class="text-gray-600 mb-6 space-y-3">
                             <li><i class="fas fa-check text-primary mr-3"></i>Publica donaciones</li>
@@ -180,18 +180,18 @@
                             <li><i class="fas fa-check text-primary mr-3"></i>Cambia estados: Disponible → Reservado → Entregado</li>
                             <li><i class="fas fa-check text-primary mr-3"></i>Recibe notificaciones</li>
                         </ul>
-                        <a href="/registro" class="bg-primary hover:bg-green-600 text-white w-full py-3 rounded-lg font-bold transition text-center block">
+                        <a href="../templates/compartidas/formularioDonador.html" class="bg-primary hover:bg-green-600 text-white w-full py-3 rounded-lg font-bold transition text-center block">
                             Registrarse como Donador
                         </a>
                     </div>
                 </div>
 
                 <!-- Beneficiario -->
-                <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 overflow-hidden border-2 border-secondary">
+                <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 overflow-hidden border-2 border-secondary flex flex-col h-[500px]">
                     <div class="bg-secondary h-24 flex items-center justify-center">
                         <i class="fas fa-handshake text-white text-5xl"></i>
                     </div>
-                    <div class="p-8">
+                    <div class="p-8 flex flex-col justify-between h-full">
                         <h3 class="text-2xl font-bold text-dark mb-4">Soy Beneficiario</h3>
                         <ul class="text-gray-600 mb-6 space-y-3">
                             <li><i class="fas fa-check text-secondary mr-3"></i>Explora donaciones</li>
@@ -199,30 +199,13 @@
                             <li><i class="fas fa-check text-secondary mr-3"></i>Solicita recogida</li>
                             <li><i class="fas fa-check text-secondary mr-3"></i>Recibe ayuda rápido</li>
                         </ul>
-                        <a href="/registro" class="bg-secondary hover:bg-yellow-500 text-white w-full py-3 rounded-lg font-bold transition text-center block">
+                        <a href="../templates/formularioBeneficiario.html" class="bg-secondary hover:bg-yellow-500 text-white w-full py-3 rounded-lg font-bold transition text-center block">
                             Registrarse como Beneficiario
                         </a>
                     </div>
                 </div>
 
-                <!-- Admin -->
-                <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 overflow-hidden">
-                    <div class="bg-dark h-24 flex items-center justify-center">
-                        <i class="fas fa-shield text-white text-5xl"></i>
-                    </div>
-                    <div class="p-8">
-                        <h3 class="text-2xl font-bold text-dark mb-4">Soy Administrador</h3>
-                        <ul class="text-gray-600 mb-6 space-y-3">
-                            <li><i class="fas fa-check text-dark mr-3"></i>Modera donaciones</li>
-                            <li><i class="fas fa-check text-dark mr-3"></i>Gestiona usuarios</li>
-                            <li><i class="fas fa-check text-dark mr-3"></i>Ve estadísticas</li>
-                            <li><i class="fas fa-check text-dark mr-3"></i>Mantén el orden</li>
-                        </ul>
-                        <button onclick="alert('Contacta con administración para acceso')" class="bg-dark hover:bg-gray-800 text-white w-full py-3 rounded-lg font-bold transition text-center block">
-                            Acceso Administrador
-                        </button>
-                    </div>
-                </div>
+
             </div>
         </div>
     </section>
@@ -279,7 +262,7 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                 <div>
                     <h3 class="text-white font-bold mb-4">
-                        <i class="fas fa-hand-holding-heart text-primary mr-2"></i>Neiva Solidaria
+                        <i class="fas fa-hand-holding-heart text-primary mr-2"></i>DonaNeiva
                     </h3>
                     <p class="text-sm">Conectando donantes con personas que necesitan</p>
                 </div>
@@ -302,7 +285,7 @@
                 <div>
                     <h4 class="text-white font-bold mb-4">Contacto</h4>
                     <p class="text-sm mb-2">
-                        <i class="fas fa-envelope text-primary mr-2"></i>info@neivasolidaria.com
+                        <i class="fas fa-envelope text-primary mr-2"></i>info@donaneiva.com
                     </p>
                     <p class="text-sm">
                         <i class="fas fa-phone text-primary mr-2"></i>+57 1 234 5678
@@ -310,7 +293,7 @@
                 </div>
             </div>
             <div class="border-t border-gray-700 pt-8 text-center text-sm">
-                <p>&copy; 2026 Neiva Solidaria. Todos los derechos reservados.</p>
+                <p>&copy; 2026 DonaNeiva. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>

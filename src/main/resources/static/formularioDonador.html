@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Registro Donador</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-[#F5F6FA] min-h-screen flex items-center justify-center p-6">
+
+<div class="w-full max-w-3xl bg-white rounded-2xl shadow-2xl overflow-hidden">
+
+    <!-- HEADER -->
+    <div class="bg-[#2ECC71] text-white p-6 text-center">
+        <h1 class="text-3xl font-bold">Registro Donador</h1>
+        <p class="text-sm opacity-90">Únete y empieza a ayudar</p>
+    </div>
+
+    <form class="p-8 space-y-6">
+
+        <!-- TIPO PERSONA -->
+        <div>
+            <label class="font-semibold text-[#2C3E50]">Tipo de persona</label>
+            <div class="flex gap-6 mt-2">
+                <label class="flex items-center gap-2">
+                    <input type="radio" name="tipoPersona" value="natural" required>
+                    <span>Persona Natural</span>
+                </label>
+                <label class="flex items-center gap-2">
+                    <input type="radio" name="tipoPersona" value="juridica">
+                    <span>Persona Jurídica</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- NOMBRE -->
+        <div>
+            <label class="font-semibold text-[#2C3E50]">Nombre completo / Empresa</label>
+            <input type="text" required
+                   class="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-[#3498DB]"
+                   placeholder="Ej: Juan Pérez o Fundación XYZ">
+        </div>
+
+        <!-- DOCUMENTO -->
+        <div class="grid md:grid-cols-2 gap-4">
+            <div>
+                <label class="font-semibold">Tipo de documento</label>
+                <select class="w-full mt-1 p-3 border rounded-xl">
+                    <option>Cédula</option>
+                    <option>NIT</option>
+                    <option>Pasaporte</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="font-semibold">Número</label>
+                <input type="text"
+                       class="w-full mt-1 p-3 border rounded-xl"
+                       placeholder="123456789">
+            </div>
+        </div>
+
+        <!-- CONTACTO -->
+        <div class="grid md:grid-cols-2 gap-4">
+            <div>
+                <label class="font-semibold">Correo</label>
+                <input type="email"
+                       class="w-full mt-1 p-3 border rounded-xl"
+                       placeholder="correo@email.com">
+            </div>
+
+            <div>
+                <label class="font-semibold">Teléfono</label>
+                <input type="tel"
+                       class="w-full mt-1 p-3 border rounded-xl"
+                       placeholder="3001234567">
+            </div>
+        </div>
+
+        <!-- DIRECCION -->
+        <div>
+            <label class="font-semibold">Dirección</label>
+            <input type="text"
+                   class="w-full mt-1 p-3 border rounded-xl"
+                   placeholder="Dirección de contacto">
+        </div>
+
+        <!-- CONTRASEÑA -->
+        <div class="grid md:grid-cols-2 gap-4">
+            <div>
+                <label class="font-semibold">Contraseña</label>
+                <input type="password"
+                       class="w-full mt-1 p-3 border rounded-xl">
+            </div>
+
+            <div>
+                <label class="font-semibold">Confirmar contraseña</label>
+                <input type="password"
+                       class="w-full mt-1 p-3 border rounded-xl">
+            </div>
+        </div>
+
+        <!-- BOTON -->
+        <button type="submit"
+                class="w-full bg-[#2ECC71] hover:bg-green-600 text-white font-bold p-3 rounded-xl transition">
+            Registrarse
+        </button>
+
+    </form>
+</div>
+
+</body>
+</html>
