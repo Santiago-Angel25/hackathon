@@ -9,7 +9,7 @@ public class WebController {
 
     @GetMapping("/")
     public String landing() {
-        return "compartidas/landing";
+        return "landing";
     }
 
     @GetMapping("/login")
