@@ -16,6 +16,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
+import org.springframework.security.web.savedrequest.SavedRequest;
 
 @Configuration
 @EnableWebSecurity
@@ -27,6 +30,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 public class SecurityConfig {
 
     private final UsuarioRepository usuarioRepository;
+    private final RequestCache requestCache = new HttpSessionRequestCache();
 
     public SecurityConfig(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
@@ -50,6 +54,14 @@ public class SecurityConfig {
                 RolUsuario rol = usuarioRepository.findByEmail(email)
                         .map(usuario -> usuario.getRol())
                         .orElse(null);
+
+                SavedRequest savedRequest = requestCache.getRequest(request, response);
+                String savedUrl = savedRequest != null ? savedRequest.getRedirectUrl() : null;
+
+                if (rol == RolUsuario.BENEFICIARIO && savedUrl != null && savedUrl.contains("/beneficiario/dashboard")) {
+                    response.sendRedirect(savedUrl);
+                    return;
+                }
 
                 if (rol == RolUsuario.DONADOR) {
                     response.sendRedirect("/donador/dashboard");

@@ -23,8 +23,7 @@
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVJkEoD6OmLXfV7mMvNj7DownLeyrkeeP/c9/tx6910t5ypBeIkCYVIac/8kcsTWxrce8vO8ZZew==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <style>
         #map-landing { height: 450px; width: 100%; border-radius: 12px; }
@@ -35,391 +34,401 @@
     </style>
 </head>
 <body class="bg-white">
-    <nav class="bg-dark text-white sticky top-0 z-50 shadow-lg">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center gap-2">
-                    <i class="fas fa-hand-holding-heart text-primary text-2xl"></i>
-                    <span class="text-2xl font-bold">DonaNeiva</span>
-                </div>
-                <div class="flex gap-4">
-                    <a th:href="@{/login}" href="/login" class="hover:text-primary transition">
-                        <i class="fas fa-sign-in-alt mr-2"></i>Ingresar
+<nav class="bg-dark text-white sticky top-0 z-50 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-hand-holding-heart text-primary text-2xl"></i>
+                <span class="text-2xl font-bold">DonaNeiva</span>
+            </div>
+            <div class="flex gap-4" th:if="${!autenticado}">
+                <a th:href="@{/login}" href="/login" class="hover:text-primary transition">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Ingresar
+                </a>
+                <a href="#seccionRegistro" class="bg-primary hover:bg-green-600 text-white px-6 py-2 rounded-lg font-semibold transition">
+                    Registrarse
+                </a>
+            </div>
+            <div class="flex gap-4" th:if="${autenticado}">
+                <a th:href="${panelUrl}" href="/" class="bg-white/10 hover:bg-white/20 text-white px-6 py-2 rounded-lg font-semibold transition">
+                    Ir a mi panel
+                </a>
+                <a th:href="@{/logout}" href="/logout" class="bg-primary hover:bg-green-600 text-white px-6 py-2 rounded-lg font-semibold transition">
+                    Cerrar sesion
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<section class="relative bg-gradient-to-r from-dark to-gray-800 text-white py-20 overflow-hidden fade-in">
+    <div class="absolute top-0 right-0 -z-10 opacity-10">
+        <i class="fas fa-heart text-white text-9xl"></i>
+    </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div class="slide-up">
+                <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+                    Compartir es <span class="text-primary">Cuidar</span>
+                </h1>
+                <p class="text-xl text-gray-300 mb-8">
+                    En DonaNeiva conectamos donantes con personas que necesitan. Juntos construimos una comunidad mas justa y solidaria.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4" th:if="${!autenticado}">
+                    <a href="#mapa" class="bg-primary hover:bg-green-600 text-white px-8 py-4 rounded-lg font-bold text-lg transition transform hover:scale-105 inline-block text-center">
+                        <i class="fas fa-map-location-dot mr-2"></i>Ver Donaciones
                     </a>
-                    <a href="#seccionRegistro" class="bg-primary hover:bg-green-600 text-white px-6 py-2 rounded-lg font-semibold transition">
-                        Registrarse
+                    <a href="#seccionRegistro" class="border-2 border-primary text-primary hover:bg-primary hover:text-white px-8 py-4 rounded-lg font-bold text-lg transition inline-block text-center">
+                        <i class="fas fa-user-plus mr-2"></i>Unete Ahora
+                    </a>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-4" th:if="${autenticado}">
+                    <a href="#mapa" class="bg-primary hover:bg-green-600 text-white px-8 py-4 rounded-lg font-bold text-lg transition transform hover:scale-105 inline-block text-center">
+                        <i class="fas fa-map-location-dot mr-2"></i>Ver Donaciones
+                    </a>
+                    <a th:href="${panelUrl}" href="/" class="border-2 border-primary text-primary hover:bg-primary hover:text-white px-8 py-4 rounded-lg font-bold text-lg transition inline-block text-center">
+                        <i class="fas fa-user mr-2"></i>Ir a mi panel
+                    </a>
+                </div>
+            </div>
+            <div class="hidden md:block slide-up">
+                <div class="relative">
+                    <div class="absolute inset-0 bg-primary opacity-20 rounded-2xl blur-3xl"></div>
+                    <i class="fas fa-hands-helping text-white text-8xl opacity-30"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="bg-light py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="text-center">
+                <div class="text-5xl font-bold text-primary mb-2" id="stat-donaciones">0</div>
+                <p class="text-gray-600 text-lg">Donaciones Activas</p>
+            </div>
+            <div class="text-center">
+                <div class="text-5xl font-bold text-secondary mb-2" id="stat-usuarios">0</div>
+                <p class="text-gray-600 text-lg">Usuarios Registrados</p>
+            </div>
+            <div class="text-center">
+                <div class="text-5xl font-bold text-dark mb-2" id="stat-entregas">0</div>
+                <p class="text-gray-600 text-lg">Entregas Realizadas</p>
+            </div>
+            <div class="text-center">
+                <div class="text-5xl font-bold text-primary mb-2" id="stat-vidas">0</div>
+                <p class="text-gray-600 text-lg">Vidas Impactadas</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="mapa" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-dark mb-4">
+                <i class="fas fa-map text-primary mr-3"></i>Donaciones en Neiva
+            </h2>
+            <p class="text-xl text-gray-600">Explora las donaciones disponibles en tu ciudad</p>
+        </div>
+
+        <div class="mb-8 flex flex-wrap gap-3 justify-center">
+            <button class="filter-btn active bg-primary text-white px-6 py-2 rounded-full font-semibold transition hover:bg-green-600" data-filter="all">Todas</button>
+            <button class="filter-btn bg-gray-200 text-dark px-6 py-2 rounded-full font-semibold transition hover:bg-gray-300" data-filter="comida">Comida</button>
+            <button class="filter-btn bg-gray-200 text-dark px-6 py-2 rounded-full font-semibold transition hover:bg-gray-300" data-filter="ropa">Ropa</button>
+            <button class="filter-btn bg-gray-200 text-dark px-6 py-2 rounded-full font-semibold transition hover:bg-gray-300" data-filter="medicamentos">Medicamentos</button>
+            <button class="filter-btn bg-gray-200 text-dark px-6 py-2 rounded-full font-semibold transition hover:bg-gray-300" data-filter="otros">Otros</button>
+        </div>
+
+        <div class="rounded-xl overflow-hidden shadow-xl mb-8">
+            <div id="map-landing"></div>
+        </div>
+
+        <div id="donaciones-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </div>
+</section>
+
+<section id="seccionRegistro" class="py-20 bg-gradient-to-b from-light to-white" th:if="${!autenticado}">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-dark mb-4">
+                <i class="fas fa-users text-secondary mr-3"></i>Cual es tu Rol?
+            </h2>
+            <p class="text-xl text-gray-600">Elige como quieres contribuir a nuestra comunidad</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+            <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 overflow-hidden flex flex-col h-[500px]">
+                <div class="bg-primary h-24 flex items-center justify-center">
+                    <i class="fas fa-gift text-white text-5xl"></i>
+                </div>
+                <div class="p-8 flex flex-col justify-between h-full">
+                    <h3 class="text-2xl font-bold text-dark mb-4">Soy Donador</h3>
+                    <ul class="text-gray-600 mb-6 space-y-3">
+                        <li><i class="fas fa-check text-primary mr-3"></i>Publica donaciones</li>
+                        <li><i class="fas fa-check text-primary mr-3"></i>Gestiona tu inventario</li>
+                        <li><i class="fas fa-check text-primary mr-3"></i>Cambia estados: Disponible a Reservado a Entregado</li>
+                        <li><i class="fas fa-check text-primary mr-3"></i>Recibe notificaciones</li>
+                    </ul>
+                    <a th:href="@{/donador}" href="/donador" class="bg-primary hover:bg-green-600 text-white w-full py-3 rounded-lg font-bold transition text-center block">
+                        Registrarse como Donador
+                    </a>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 overflow-hidden border-2 border-secondary flex flex-col h-[500px]">
+                <div class="bg-secondary h-24 flex items-center justify-center">
+                    <i class="fas fa-handshake text-white text-5xl"></i>
+                </div>
+                <div class="p-8 flex flex-col justify-between h-full">
+                    <h3 class="text-2xl font-bold text-dark mb-4">Soy Beneficiario</h3>
+                    <ul class="text-gray-600 mb-6 space-y-3">
+                        <li><i class="fas fa-check text-secondary mr-3"></i>Explora donaciones</li>
+                        <li><i class="fas fa-check text-secondary mr-3"></i>Filtra por categoria</li>
+                        <li><i class="fas fa-check text-secondary mr-3"></i>Solicita recogida</li>
+                        <li><i class="fas fa-check text-secondary mr-3"></i>Recibe ayuda rapido</li>
+                    </ul>
+                    <a th:href="@{/beneficiario}" href="/beneficiario" class="bg-secondary hover:bg-yellow-500 text-white w-full py-3 rounded-lg font-bold transition text-center block">
+                        Registrarse como Beneficiario
                     </a>
                 </div>
             </div>
         </div>
-    </nav>
+    </div>
+</section>
 
-    <section class="relative bg-gradient-to-r from-dark to-gray-800 text-white py-20 overflow-hidden fade-in">
-        <div class="absolute top-0 right-0 -z-10 opacity-10">
-            <i class="fas fa-heart text-white text-9xl"></i>
+<section class="py-20 bg-light">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-dark mb-4">
+                <i class="fas fa-lightbulb text-secondary mr-3"></i>Como Funciona?
+            </h2>
+            <p class="text-xl text-gray-600">Un proceso simple para compartir y recibir ayuda</p>
         </div>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                <div class="slide-up">
-                    <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">
-                        Compartir es <span class="text-primary">Cuidar</span>
-                    </h1>
-                    <p class="text-xl text-gray-300 mb-8">
-                        En DonaNeiva conectamos donantes con personas que necesitan. Juntos construimos una comunidad mas justa y solidaria.
-                    </p>
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <a href="#mapa" class="bg-primary hover:bg-green-600 text-white px-8 py-4 rounded-lg font-bold text-lg transition transform hover:scale-105 inline-block text-center">
-                            <i class="fas fa-map-location-dot mr-2"></i>Ver Donaciones
-                        </a>
-                        <a href="#seccionRegistro" class="border-2 border-primary text-primary hover:bg-primary hover:text-white px-8 py-4 rounded-lg font-bold text-lg transition inline-block text-center">
-                            <i class="fas fa-user-plus mr-2"></i>Unete Ahora
-                        </a>
-                    </div>
-                </div>
-                <div class="hidden md:block slide-up">
-                    <div class="relative">
-                        <div class="absolute inset-0 bg-primary opacity-20 rounded-2xl blur-3xl"></div>
-                        <i class="fas fa-hands-helping text-white text-8xl opacity-30"></i>
-                    </div>
-                </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="text-center">
+                <div class="bg-primary text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 text-2xl font-bold">1</div>
+                <h3 class="text-xl font-bold text-dark mb-2">Registrate</h3>
+                <p class="text-gray-600">Elige tu rol y completa tu perfil en segundos</p>
             </div>
-        </div>
-    </section>
-
-    <section class="bg-light py-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div class="text-center">
-                    <div class="text-5xl font-bold text-primary mb-2" id="stat-donaciones">0</div>
-                    <p class="text-gray-600 text-lg">Donaciones Activas</p>
-                </div>
-                <div class="text-center">
-                    <div class="text-5xl font-bold text-secondary mb-2" id="stat-usuarios">0</div>
-                    <p class="text-gray-600 text-lg">Usuarios Registrados</p>
-                </div>
-                <div class="text-center">
-                    <div class="text-5xl font-bold text-dark mb-2" id="stat-entregas">0</div>
-                    <p class="text-gray-600 text-lg">Entregas Realizadas</p>
-                </div>
-                <div class="text-center">
-                    <div class="text-5xl font-bold text-primary mb-2" id="stat-vidas">0</div>
-                    <p class="text-gray-600 text-lg">Vidas Impactadas</p>
-                </div>
+            <div class="text-center">
+                <div class="bg-secondary text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 text-2xl font-bold">2</div>
+                <h3 class="text-xl font-bold text-dark mb-2">Conecta</h3>
+                <p class="text-gray-600">Publica o busca donaciones en el mapa</p>
+            </div>
+            <div class="text-center">
+                <div class="bg-primary text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 text-2xl font-bold">3</div>
+                <h3 class="text-xl font-bold text-dark mb-2">Coordina</h3>
+                <p class="text-gray-600">Acuerda los detalles de entrega</p>
+            </div>
+            <div class="text-center">
+                <div class="bg-secondary text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 text-2xl font-bold">4</div>
+                <h3 class="text-xl font-bold text-dark mb-2">Impacta</h3>
+                <p class="text-gray-600">Haz la diferencia en tu comunidad</p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <section id="mapa" class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="text-4xl font-bold text-dark mb-4">
-                    <i class="fas fa-map text-primary mr-3"></i>Donaciones en Neiva
-                </h2>
-                <p class="text-xl text-gray-600">Explora las donaciones disponibles en tu ciudad</p>
+<section class="bg-gradient-to-r from-primary to-green-600 text-white py-16" th:if="${!autenticado}">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-4xl font-bold mb-6">Listo para hacer la diferencia?</h2>
+        <p class="text-xl mb-8 opacity-90">Unete a nuestra comunidad de solidaridad y cambio social</p>
+        <a href="#seccionRegistro" class="bg-white text-primary hover:bg-gray-100 px-10 py-4 rounded-lg font-bold text-lg transition inline-block">
+            <i class="fas fa-arrow-right mr-2"></i>Registrarse Ahora
+        </a>
+    </div>
+</section>
+
+<footer class="bg-dark text-gray-300 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            <div>
+                <h3 class="text-white font-bold mb-4">
+                    <i class="fas fa-hand-holding-heart text-primary mr-2"></i>DonaNeiva
+                </h3>
+                <p class="text-sm">Conectando donantes con personas que necesitan</p>
             </div>
-
-            <div class="mb-8 flex flex-wrap gap-3 justify-center">
-                <button class="filter-btn active bg-primary text-white px-6 py-2 rounded-full font-semibold transition hover:bg-green-600" data-filter="all">
-                    <i class="fas fa-list mr-2"></i>Todas
-                </button>
-                <button class="filter-btn bg-gray-200 text-dark px-6 py-2 rounded-full font-semibold transition hover:bg-gray-300" data-filter="comida">
-                    <i class="fas fa-utensils mr-2"></i>Comida
-                </button>
-                <button class="filter-btn bg-gray-200 text-dark px-6 py-2 rounded-full font-semibold transition hover:bg-gray-300" data-filter="ropa">
-                    <i class="fas fa-shirt mr-2"></i>Ropa
-                </button>
-                <button class="filter-btn bg-gray-200 text-dark px-6 py-2 rounded-full font-semibold transition hover:bg-gray-300" data-filter="libros">
-                    <i class="fas fa-book mr-2"></i>Libros
-                </button>
-                <button class="filter-btn bg-gray-200 text-dark px-6 py-2 rounded-full font-semibold transition hover:bg-gray-300" data-filter="otros">
-                    <i class="fas fa-box mr-2"></i>Otros
-                </button>
+            <div>
+                <h4 class="text-white font-bold mb-4">Navegacion</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#mapa" class="hover:text-primary transition">Ver Donaciones</a></li>
+                    <li th:if="${!autenticado}"><a th:href="@{/login}" href="/login" class="hover:text-primary transition">Ingresar</a></li>
+                    <li th:if="${autenticado}"><a th:href="${panelUrl}" href="/" class="hover:text-primary transition">Ir a mi panel</a></li>
+                    <li th:if="${!autenticado}"><a href="#seccionRegistro" class="hover:text-primary transition">Registrarse</a></li>
+                </ul>
             </div>
-
-            <div class="rounded-xl overflow-hidden shadow-xl mb-8">
-                <div id="map-landing"></div>
+            <div>
+                <h4 class="text-white font-bold mb-4">Informacion</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#" class="hover:text-primary transition">Sobre Nosotros</a></li>
+                    <li><a href="#" class="hover:text-primary transition">Privacidad</a></li>
+                    <li><a href="#" class="hover:text-primary transition">Terminos</a></li>
+                </ul>
             </div>
-
-            <div id="donaciones-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            </div>
-        </div>
-    </section>
-
-    <section id="seccionRegistro" class="py-20 bg-gradient-to-b from-light to-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="text-4xl font-bold text-dark mb-4">
-                    <i class="fas fa-users text-secondary mr-3"></i>Cual es tu Rol?
-                </h2>
-                <p class="text-xl text-gray-600">Elige como quieres contribuir a nuestra comunidad</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-                <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 overflow-hidden flex flex-col h-[500px]">
-                    <div class="bg-primary h-24 flex items-center justify-center">
-                        <i class="fas fa-gift text-white text-5xl"></i>
-                    </div>
-                    <div class="p-8 flex flex-col justify-between h-full">
-                        <h3 class="text-2xl font-bold text-dark mb-4">Soy Donador</h3>
-                        <ul class="text-gray-600 mb-6 space-y-3">
-                            <li><i class="fas fa-check text-primary mr-3"></i>Publica donaciones</li>
-                            <li><i class="fas fa-check text-primary mr-3"></i>Gestiona tu inventario</li>
-                            <li><i class="fas fa-check text-primary mr-3"></i>Cambia estados: Disponible a Reservado a Entregado</li>
-                            <li><i class="fas fa-check text-primary mr-3"></i>Recibe notificaciones</li>
-                        </ul>
-                        <a th:href="@{/donador}" href="/donador" class="bg-primary hover:bg-green-600 text-white w-full py-3 rounded-lg font-bold transition text-center block">
-                            Registrarse como Donador
-                        </a>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 overflow-hidden border-2 border-secondary flex flex-col h-[500px]">
-                    <div class="bg-secondary h-24 flex items-center justify-center">
-                        <i class="fas fa-handshake text-white text-5xl"></i>
-                    </div>
-                    <div class="p-8 flex flex-col justify-between h-full">
-                        <h3 class="text-2xl font-bold text-dark mb-4">Soy Beneficiario</h3>
-                        <ul class="text-gray-600 mb-6 space-y-3">
-                            <li><i class="fas fa-check text-secondary mr-3"></i>Explora donaciones</li>
-                            <li><i class="fas fa-check text-secondary mr-3"></i>Filtra por categoria</li>
-                            <li><i class="fas fa-check text-secondary mr-3"></i>Solicita recogida</li>
-                            <li><i class="fas fa-check text-secondary mr-3"></i>Recibe ayuda rapido</li>
-                        </ul>
-                        <a th:href="@{/beneficiario}" href="/beneficiario" class="bg-secondary hover:bg-yellow-500 text-white w-full py-3 rounded-lg font-bold transition text-center block">
-                            Registrarse como Beneficiario
-                        </a>
-                    </div>
-                </div>
+            <div>
+                <h4 class="text-white font-bold mb-4">Contacto</h4>
+                <p class="text-sm mb-2"><i class="fas fa-envelope text-primary mr-2"></i>info@donaneiva.com</p>
+                <p class="text-sm"><i class="fas fa-phone text-primary mr-2"></i>+57 1 234 5678</p>
             </div>
         </div>
-    </section>
-
-    <section class="py-20 bg-light">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="text-4xl font-bold text-dark mb-4">
-                    <i class="fas fa-lightbulb text-secondary mr-3"></i>Como Funciona?
-                </h2>
-                <p class="text-xl text-gray-600">Un proceso simple para compartir y recibir ayuda</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div class="text-center">
-                    <div class="bg-primary text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 text-2xl font-bold">1</div>
-                    <h3 class="text-xl font-bold text-dark mb-2">Registrate</h3>
-                    <p class="text-gray-600">Elige tu rol y completa tu perfil en segundos</p>
-                </div>
-                <div class="text-center">
-                    <div class="bg-secondary text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 text-2xl font-bold">2</div>
-                    <h3 class="text-xl font-bold text-dark mb-2">Conecta</h3>
-                    <p class="text-gray-600">Publica o busca donaciones en el mapa</p>
-                </div>
-                <div class="text-center">
-                    <div class="bg-primary text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 text-2xl font-bold">3</div>
-                    <h3 class="text-xl font-bold text-dark mb-2">Coordina</h3>
-                    <p class="text-gray-600">Acuerda los detalles de entrega</p>
-                </div>
-                <div class="text-center">
-                    <div class="bg-secondary text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 text-2xl font-bold">4</div>
-                    <h3 class="text-xl font-bold text-dark mb-2">Impacta</h3>
-                    <p class="text-gray-600">Haz la diferencia en tu comunidad</p>
-                </div>
-            </div>
+        <div class="border-t border-gray-700 pt-8 text-center text-sm">
+            <p>&copy; 2026 DonaNeiva. Todos los derechos reservados.</p>
         </div>
-    </section>
+    </div>
+</footer>
 
-    <section class="bg-gradient-to-r from-primary to-green-600 text-white py-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-4xl font-bold mb-6">Listo para hacer la diferencia?</h2>
-            <p class="text-xl mb-8 opacity-90">Unete a nuestra comunidad de solidaridad y cambio social</p>
-            <a href="#seccionRegistro" class="bg-white text-primary hover:bg-gray-100 px-10 py-4 rounded-lg font-bold text-lg transition inline-block">
-                <i class="fas fa-arrow-right mr-2"></i>Registrarse Ahora
-            </a>
-        </div>
-    </section>
+<script>
+    let map = L.map('map-landing').setView([2.941761, -75.297825], 12);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        maxZoom: 19
+    }).addTo(map);
 
-    <footer class="bg-dark text-gray-300 py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-                <div>
-                    <h3 class="text-white font-bold mb-4">
-                        <i class="fas fa-hand-holding-heart text-primary mr-2"></i>DonaNeiva
-                    </h3>
-                    <p class="text-sm">Conectando donantes con personas que necesitan</p>
-                </div>
-                <div>
-                    <h4 class="text-white font-bold mb-4">Navegacion</h4>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="#mapa" class="hover:text-primary transition">Ver Donaciones</a></li>
-                        <li><a th:href="@{/login}" href="/login" class="hover:text-primary transition">Ingresar</a></li>
-                        <li><a href="#seccionRegistro" class="hover:text-primary transition">Registrarse</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-white font-bold mb-4">Informacion</h4>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="#" class="hover:text-primary transition">Sobre Nosotros</a></li>
-                        <li><a href="#" class="hover:text-primary transition">Privacidad</a></li>
-                        <li><a href="#" class="hover:text-primary transition">Terminos</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-white font-bold mb-4">Contacto</h4>
-                    <p class="text-sm mb-2">
-                        <i class="fas fa-envelope text-primary mr-2"></i>info@donaneiva.com
-                    </p>
-                    <p class="text-sm">
-                        <i class="fas fa-phone text-primary mr-2"></i>+57 1 234 5678
-                    </p>
-                </div>
-            </div>
-            <div class="border-t border-gray-700 pt-8 text-center text-sm">
-                <p>&copy; 2026 DonaNeiva. Todos los derechos reservados.</p>
-            </div>
-        </div>
-    </footer>
+    let marcadores = [];
+    let donacionesGlobales = [];
 
-    <script>
-        let map = L.map('map-landing').setView([2.941761, -75.297825], 12);
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-            maxZoom: 19
-        }).addTo(map);
+    function normalizarTipoDonacion(donacion) {
+        const tipoId = donacion.tipo?.id != null ? String(donacion.tipo.id) : '';
+        const tipos = {
+            '1': { key: 'comida', color: '#e74c3c', icon: 'fa-utensils', label: 'Comida' },
+            '2': { key: 'ropa', color: '#3498db', icon: 'fa-shirt', label: 'Ropa' },
+            '3': { key: 'medicamentos', color: '#9b59b6', icon: 'fa-pills', label: 'Medicamentos' },
+            '4': { key: 'otros', color: '#95a5a6', icon: 'fa-box-open', label: 'Otros' }
+        };
+        return tipos[tipoId] || { key: 'otros', color: '#95a5a6', icon: 'fa-box-open', label: 'Otros' };
+    }
 
-        let marcadores = [];
-        let donacionesGlobales = [];
+    function crearIconoMapa(donacion) {
+        const tipo = normalizarTipoDonacion(donacion);
+        return L.divIcon({
+            html: `<div class="flex items-center justify-center w-10 h-10 rounded-full text-white shadow-lg border-2 border-white" style="background-color: ${tipo.color};"><i class="fas ${tipo.icon}"></i></div>`,
+            iconSize: [40, 40],
+            iconAnchor: [20, 20],
+            popupAnchor: [0, -18],
+            className: 'leaflet-icon-custom'
+        });
+    }
 
-        async function cargarDonaciones() {
-            try {
-                const response = await fetch('/donaciones');
-                const donaciones = await response.json();
-                donacionesGlobales = donaciones;
+    async function cargarDonaciones() {
+        try {
+            const response = await fetch('/donaciones');
+            const donaciones = await response.json();
+            donacionesGlobales = donaciones;
 
-                marcadores.forEach(m => map.removeLayer(m));
-                marcadores = [];
-
-                donaciones.forEach(donacion => {
-                    const lat = donacion.ubicacion?.latitud;
-                    const lng = donacion.ubicacion?.longitud;
-                    const tipo = donacion.tipo?.id ? String(donacion.tipo.id) : 'otros';
-
-                    if (lat != null && lng != null) {
-                        const color = getColorPorCategoria(tipo);
-                        const icon = L.divIcon({
-                            html: `<div class="flex items-center justify-center w-8 h-8 rounded-full text-white font-bold" style="background-color: ${color};">
-                                <i class="fas fa-map-pin"></i>
-                            </div>`,
-                            iconSize: [32, 32],
-                            className: 'leaflet-icon-custom'
-                        });
-
-                        const marcador = L.marker([lat, lng], { icon })
-                            .addTo(map)
-                            .bindPopup(`
-                                <div class="p-2 min-w-xs">
-                                    <h4 class="font-bold text-dark">${donacion.titulo || 'Donacion'}</h4>
-                                    <p class="text-sm text-gray-600">${donacion.descripcion || ''}</p>
-                                    <p class="text-xs mt-2 text-primary">Ubicacion: ${lat.toFixed(2)}, ${lng.toFixed(2)}</p>
-                                </div>
-                            `);
-                        marcadores.push(marcador);
-                    }
-                });
-
-                document.getElementById('stat-donaciones').textContent = donaciones.length;
-                mostrarDonaciones(donaciones);
-            } catch (error) {
-                console.error('Error cargando donaciones:', error);
-            }
-        }
-
-        function getColorPorCategoria(tipo) {
-            const colores = {
-                '1': '#e74c3c',
-                '2': '#3498db',
-                '3': '#9b59b6',
-                '4': '#95a5a6',
-                'comida': '#e74c3c',
-                'ropa': '#3498db',
-                'libros': '#9b59b6',
-                'otros': '#95a5a6'
-            };
-            return colores[tipo?.toLowerCase?.() ? tipo.toLowerCase() : tipo] || '#2ecc71';
-        }
-
-        function coincideFiltro(donacion, filtro) {
-            if (filtro === 'all') return true;
-
-            const tipoId = donacion.tipo?.id != null ? String(donacion.tipo.id) : '';
-            const mapa = {
-                comida: '1',
-                ropa: '2',
-                libros: '3',
-                otros: '4'
-            };
-
-            return tipoId === mapa[filtro];
-        }
-
-        function mostrarDonaciones(donaciones) {
-            const container = document.getElementById('donaciones-cards');
-            container.innerHTML = '';
-
-            if (donaciones.length === 0) {
-                container.innerHTML = '<div class="col-span-full text-center text-gray-500 py-8"><i class="fas fa-inbox text-4xl mb-4"></i><p>No hay donaciones disponibles</p></div>';
-                return;
-            }
+            marcadores.forEach(m => map.removeLayer(m));
+            marcadores = [];
 
             donaciones.forEach(donacion => {
-                const card = document.createElement('div');
-                card.className = 'bg-white rounded-lg shadow-md hover:shadow-lg transition overflow-hidden';
-
-                const tipoId = donacion.tipo?.id != null ? String(donacion.tipo.id) : '4';
                 const lat = donacion.ubicacion?.latitud;
                 const lng = donacion.ubicacion?.longitud;
-                const color = getColorPorCategoria(tipoId);
+                const tipo = normalizarTipoDonacion(donacion);
 
-                card.innerHTML = `
-                    <div class="h-3" style="background-color: ${color};"></div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-3">
-                            <h4 class="text-lg font-bold text-dark">${donacion.titulo || 'Donacion'}</h4>
-                            <span class="px-3 py-1 rounded-full text-sm font-semibold" style="background-color: ${color}20; color: ${color};">
-                                ${donacion.estado || 'DISPONIBLE'}
-                            </span>
-                        </div>
-                        <p class="text-gray-600 text-sm mb-4">${donacion.descripcion || ''}</p>
-                        <div class="flex items-center text-gray-500 text-sm mb-4">
-                            <i class="fas fa-map-marker-alt text-primary mr-2"></i>
-                            ${lat != null && lng != null ? `${lat.toFixed(2)}°, ${lng.toFixed(2)}°` : 'Ubicacion por confirmar'}
-                        </div>
-                        <a th:href="@{/login}" href="/login" class="w-full bg-primary hover:bg-green-600 text-white py-2 rounded-lg font-semibold transition inline-block text-center">
-                            Ver Detalles
-                        </a>
-                    </div>
-                `;
-                container.appendChild(card);
+                if (lat != null && lng != null) {
+                    const marcador = L.marker([lat, lng], { icon: crearIconoMapa(donacion) })
+                        .addTo(map)
+                        .bindPopup(`
+                            <div class="p-2 min-w-xs">
+                                <h4 class="font-bold text-dark">${donacion.titulo || 'Donacion'}</h4>
+                                <p class="text-sm font-semibold" style="color: ${tipo.color};">
+                                    <i class="fas ${tipo.icon} mr-1"></i>${tipo.label}
+                                </p>
+                                <p class="text-sm text-gray-600">${donacion.descripcion || ''}</p>
+                                <p class="text-xs mt-2 text-primary">Ubicacion: ${lat.toFixed(2)}, ${lng.toFixed(2)}</p>
+                            </div>
+                        `);
+                    marcadores.push(marcador);
+                }
             });
+
+            mostrarDonaciones(donaciones);
+        } catch (error) {
+            console.error('Error cargando donaciones:', error);
+        }
+    }
+
+    async function cargarEstadisticas() {
+        try {
+            const response = await fetch('/api/estadisticas');
+            const data = await response.json();
+            document.getElementById('stat-donaciones').textContent = data.donacionesActivas ?? 0;
+            document.getElementById('stat-usuarios').textContent = data.usuariosRegistrados ?? 0;
+            document.getElementById('stat-entregas').textContent = data.entregasRealizadas ?? 0;
+            document.getElementById('stat-vidas').textContent = data.vidasImpactadas ?? 0;
+        } catch (error) {
+            console.error('Error cargando estadisticas:', error);
+        }
+    }
+
+    function coincideFiltro(donacion, filtro) {
+        if (filtro === 'all') return true;
+        return normalizarTipoDonacion(donacion).key === filtro;
+    }
+
+    function mostrarDonaciones(donaciones) {
+        const container = document.getElementById('donaciones-cards');
+        container.innerHTML = '';
+
+        if (donaciones.length === 0) {
+            container.innerHTML = '<div class="col-span-full text-center text-gray-500 py-8"><i class="fas fa-inbox text-4xl mb-4"></i><p>No hay donaciones disponibles</p></div>';
+            return;
         }
 
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active', 'bg-primary', 'text-white'));
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.add('bg-gray-200', 'text-dark'));
+        donaciones.forEach(donacion => {
+            const card = document.createElement('div');
+            card.className = 'bg-white rounded-lg shadow-md hover:shadow-lg transition overflow-hidden';
 
-                this.classList.remove('bg-gray-200', 'text-dark');
-                this.classList.add('active', 'bg-primary', 'text-white');
+            const tipo = normalizarTipoDonacion(donacion);
+            const lat = donacion.ubicacion?.latitud;
+            const lng = donacion.ubicacion?.longitud;
 
-                const filtro = this.dataset.filter;
-                const filtradas = filtro === 'all'
-                    ? donacionesGlobales
-                    : donacionesGlobales.filter(d => coincideFiltro(d, filtro));
-                mostrarDonaciones(filtradas);
-            });
+            card.innerHTML = `
+                <div class="h-3" style="background-color: ${tipo.color};"></div>
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-3">
+                        <h4 class="text-lg font-bold text-dark">${donacion.titulo || 'Donacion'}</h4>
+                        <span class="px-3 py-1 rounded-full text-sm font-semibold" style="background-color: ${tipo.color}20; color: ${tipo.color};">
+                            ${donacion.estado === 'RESERVADO' ? 'NO DISPONIBLE' : (donacion.estado || 'DISPONIBLE')}
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm font-semibold mb-3" style="color: ${tipo.color};">
+                        <i class="fas ${tipo.icon}"></i>
+                        <span>${tipo.label}</span>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">${donacion.descripcion || ''}</p>
+                    <div class="flex items-center text-gray-500 text-sm mb-4">
+                        <i class="fas fa-map-marker-alt text-primary mr-2"></i>
+                        ${lat != null && lng != null ? `${lat.toFixed(2)}°, ${lng.toFixed(2)}°` : 'Ubicacion por confirmar'}
+                    </div>
+                    <a href="/beneficiario/dashboard?donacion=${donacion.id}" class="w-full bg-primary hover:bg-green-600 text-white py-2 rounded-lg font-semibold transition inline-block text-center">
+                        Ver Detalles
+                    </a>
+                </div>
+            `;
+            container.appendChild(card);
         });
+    }
 
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active', 'bg-primary', 'text-white'));
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.add('bg-gray-200', 'text-dark'));
+            this.classList.remove('bg-gray-200', 'text-dark');
+            this.classList.add('active', 'bg-primary', 'text-white');
+            const filtro = this.dataset.filter;
+            const filtradas = filtro === 'all' ? donacionesGlobales : donacionesGlobales.filter(d => coincideFiltro(d, filtro));
+            mostrarDonaciones(filtradas);
+        });
+    });
+
+    cargarDonaciones();
+    cargarEstadisticas();
+    setInterval(() => {
         cargarDonaciones();
-        setInterval(cargarDonaciones, 30000);
-    </script>
+        cargarEstadisticas();
+    }, 30000);
+</script>
 </body>
 </html>

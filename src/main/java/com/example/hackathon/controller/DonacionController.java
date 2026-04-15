@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -54,6 +55,25 @@ public class DonacionController {
     @Operation(summary = "Actualizar donacion existente")
     public ResponseEntity<Donacion> actualizar(@PathVariable Long id, @Valid @RequestBody Donacion donacion) {
         return ResponseEntity.ok(service.actualizar(id, donacion));
+    }
+
+    @PatchMapping("/{id}/reservar")
+    @Operation(summary = "Reservar una donacion")
+    public ResponseEntity<Donacion> reservar(@PathVariable Long id) {
+        return ResponseEntity.ok(service.reservar(id));
+    }
+
+    @PatchMapping("/{id}/cancelar-reserva")
+    @Operation(summary = "Cancelar la reserva de una donacion")
+    public ResponseEntity<Donacion> cancelarReserva(@PathVariable Long id) {
+        return ResponseEntity.ok(service.cancelarReserva(id));
+    }
+
+    @PatchMapping("/{id}/recogido")
+    @Operation(summary = "Marcar donacion como recogida")
+    public ResponseEntity<Void> marcarRecogido(@PathVariable Long id) {
+        service.marcarRecogido(id);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")

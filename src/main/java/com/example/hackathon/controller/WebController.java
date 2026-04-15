@@ -1,13 +1,36 @@
 package com.example.hackathon.controller;
+
+import com.example.hackathon.model.RolUsuario;
+import com.example.hackathon.repository.UsuarioRepository;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class WebController {
 
+    private final UsuarioRepository usuarioRepository;
+
+    public WebController(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
+
     @GetMapping("/")
-    public String landing() {
-        return "landing"; // templates/landing.html
+    public String landing(Authentication authentication, Model model) {
+        boolean autenticado = authentication != null
+                && authentication.isAuthenticated()
+                && !"anonymousUser".equals(authentication.getName());
+        model.addAttribute("autenticado", autenticado);
+
+        String panelUrl = "/login";
+        if (autenticado) {
+            panelUrl = usuarioRepository.findByEmail(authentication.getName())
+                    .map(usuario -> usuario.getRol() == RolUsuario.DONADOR ? "/donador/dashboard" : "/beneficiario/dashboard")
+                    .orElse("/");
+        }
+        model.addAttribute("panelUrl", panelUrl);
+        return "landing";
     }
 
     @GetMapping("/login")

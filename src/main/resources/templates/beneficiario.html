@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script>
         tailwind.config = {
             theme: {
@@ -24,82 +25,303 @@
 <body class="bg-[#F5F6FA] min-h-screen">
 <nav class="bg-dark text-white p-4 flex justify-between items-center">
     <h1 class="text-xl font-bold">DonaNeiva - Beneficiario</h1>
-    <a href="/logout" class="bg-red-500 px-4 py-2 rounded inline-block text-white text-center">
-        Cerrar sesion
-    </a>
+    <div class="flex gap-3">
+        <a href="/" class="bg-white/10 px-4 py-2 rounded inline-block text-white text-center">
+            Ver Landing
+        </a>
+        <a href="/logout" class="bg-red-500 px-4 py-2 rounded inline-block text-white text-center">
+            Cerrar sesion
+        </a>
+    </div>
 </nav>
 
-<div class="max-w-6xl mx-auto p-6">
-    <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
-        <h2 class="text-xl font-bold text-dark mb-4">Filtrar Donaciones</h2>
-        <div class="flex flex-wrap gap-3">
-            <button class="filtro bg-primary text-white px-4 py-2 rounded" data-tipo="all">Todas</button>
-            <button class="filtro bg-gray-200 px-4 py-2 rounded" data-tipo="comida">Comida</button>
-            <button class="filtro bg-gray-200 px-4 py-2 rounded" data-tipo="ropa">Ropa</button>
-            <button class="filtro bg-gray-200 px-4 py-2 rounded" data-tipo="medicamentos">Medicamentos</button>
-            <button class="filtro bg-gray-200 px-4 py-2 rounded" data-tipo="otros">Otros</button>
-        </div>
-    </div>
+<div class="max-w-7xl mx-auto p-6 space-y-6">
+    <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        <article class="bg-white rounded-2xl shadow-lg p-5">
+            <p class="text-sm text-gray-500">Donaciones activas</p>
+            <p id="stat-donaciones" class="text-3xl font-bold text-primary mt-2">0</p>
+        </article>
+        <article class="bg-white rounded-2xl shadow-lg p-5">
+            <p class="text-sm text-gray-500">Usuarios registrados</p>
+            <p id="stat-usuarios" class="text-3xl font-bold text-sky-600 mt-2">0</p>
+        </article>
+        <article class="bg-white rounded-2xl shadow-lg p-5">
+            <p class="text-sm text-gray-500">Entregas realizadas</p>
+            <p id="stat-entregas" class="text-3xl font-bold text-amber-500 mt-2">0</p>
+        </article>
+        <article class="bg-white rounded-2xl shadow-lg p-5">
+            <p class="text-sm text-gray-500">Vidas impactadas</p>
+            <p id="stat-vidas" class="text-3xl font-bold text-dark mt-2">0</p>
+        </article>
+    </section>
 
-    <div class="bg-white rounded-xl shadow-lg p-4">
-        <h2 class="text-2xl font-bold text-dark mb-4">Donaciones disponibles</h2>
-        <div id="map" class="h-[500px] rounded-xl"></div>
-    </div>
+    <section class="bg-white rounded-2xl shadow-lg p-6">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-5">
+            <div>
+                <h2 class="text-3xl font-bold text-dark">Panel de Solicitudes</h2>
+                <p class="text-gray-500">Revisa disponibilidad, abre detalles y gestiona tu solicitud.</p>
+            </div>
+            <div class="flex flex-wrap gap-3">
+                <button class="filtro bg-primary text-white px-4 py-2 rounded-full" data-tipo="all">Todas</button>
+                <button class="filtro bg-gray-200 px-4 py-2 rounded-full" data-tipo="comida">Comida</button>
+                <button class="filtro bg-gray-200 px-4 py-2 rounded-full" data-tipo="ropa">Ropa</button>
+                <button class="filtro bg-gray-200 px-4 py-2 rounded-full" data-tipo="medicamentos">Medicamentos</button>
+                <button class="filtro bg-gray-200 px-4 py-2 rounded-full" data-tipo="otros">Otros</button>
+            </div>
+        </div>
+
+        <div class="grid lg:grid-cols-[1.2fr,0.8fr] gap-6">
+            <div>
+                <div id="listaDonaciones" class="grid md:grid-cols-2 gap-4"></div>
+            </div>
+
+            <aside class="bg-slate-50 rounded-2xl border border-slate-200 p-5">
+                <h3 class="text-2xl font-bold text-dark mb-2">Ver detalles</h3>
+                <p id="detalleEstado" class="text-sm font-semibold text-green-700 mb-4">Selecciona una donacion para ver su disponibilidad.</p>
+                <div id="detalleVacio" class="text-gray-500 text-sm">
+                    Elige una tarjeta del listado o entra desde el landing para ver el mapa, la descripcion y solicitar la donacion.
+                </div>
+                <div id="detalleContenido" class="hidden space-y-4">
+                    <div>
+                        <h4 id="detalleTitulo" class="text-2xl font-bold text-dark"></h4>
+                        <p id="detalleDescripcion" class="text-gray-600 mt-2"></p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 text-sm">
+                        <div class="bg-white rounded-xl p-3 border">
+                            <div class="text-gray-500">Cantidad</div>
+                            <div id="detalleCantidad" class="font-semibold text-dark"></div>
+                        </div>
+                        <div class="bg-white rounded-xl p-3 border">
+                            <div class="text-gray-500">Disponibilidad</div>
+                            <div id="detalleDisponibilidad" class="font-semibold text-dark"></div>
+                        </div>
+                    </div>
+                    <div id="mapDetalle" class="h-72 rounded-xl overflow-hidden border"></div>
+                    <div class="grid gap-3">
+                        <button id="btnSolicitar"
+                                class="w-full bg-primary hover:bg-green-600 text-white py-3 rounded-xl font-semibold transition">
+                            Solicitar donacion
+                        </button>
+                        <button id="btnCancelar"
+                                class="hidden w-full bg-yellow-500 hover:bg-yellow-600 text-white py-3 rounded-xl font-semibold transition">
+                            Cancelar solicitud
+                        </button>
+                        <button id="btnRecogido"
+                                class="hidden w-full bg-dark hover:bg-slate-700 text-white py-3 rounded-xl font-semibold transition">
+                            Marcar como recogido
+                        </button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </section>
 </div>
 
 <script>
-    let map = L.map('map').setView([2.9386, -75.2811], 13);
-    let marcadores = [];
     let donacionesGlobal = [];
+    let donacionSeleccionada = null;
+    let mapDetalle;
+    let markerDetalle;
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    function normalizarTipoDonacion(donacion) {
+        const tipoId = donacion.tipo?.id != null ? String(donacion.tipo.id) : '';
+        const tipos = {
+            '1': { key: 'comida', color: '#e74c3c', icon: 'fa-utensils', label: 'Comida' },
+            '2': { key: 'ropa', color: '#3498db', icon: 'fa-shirt', label: 'Ropa' },
+            '3': { key: 'medicamentos', color: '#9b59b6', icon: 'fa-pills', label: 'Medicamentos' },
+            '4': { key: 'otros', color: '#95a5a6', icon: 'fa-box-open', label: 'Otros' }
+        };
+        return tipos[tipoId] || { key: 'otros', color: '#95a5a6', icon: 'fa-box-open', label: 'Otros' };
+    }
+
+    function crearIconoMapa(donacion) {
+        const tipo = normalizarTipoDonacion(donacion);
+        return L.divIcon({
+            html: `<div class="flex items-center justify-center w-10 h-10 rounded-full text-white shadow-lg border-2 border-white" style="background-color: ${tipo.color};"><i class="fas ${tipo.icon}"></i></div>`,
+            iconSize: [40, 40],
+            iconAnchor: [20, 20],
+            popupAnchor: [0, -18],
+            className: 'leaflet-icon-custom'
+        });
+    }
+
+    async function cargarEstadisticas() {
+        try {
+            const response = await fetch('/api/estadisticas');
+            const data = await response.json();
+            document.getElementById('stat-donaciones').textContent = data.donacionesActivas ?? 0;
+            document.getElementById('stat-usuarios').textContent = data.usuariosRegistrados ?? 0;
+            document.getElementById('stat-entregas').textContent = data.entregasRealizadas ?? 0;
+            document.getElementById('stat-vidas').textContent = data.vidasImpactadas ?? 0;
+        } catch (error) {
+            console.error('Error cargando estadisticas:', error);
+        }
+    }
+
+    function getDonacionIdDesdeUrl() {
+        const params = new URLSearchParams(window.location.search);
+        const valor = params.get('donacion');
+        return valor ? Number(valor) : null;
+    }
+
+    function inicializarMapaDetalle() {
+        if (!mapDetalle) {
+            mapDetalle = L.map('mapDetalle').setView([2.9386, -75.2811], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapDetalle);
+        }
+    }
 
     async function cargarDonaciones() {
         try {
             const response = await fetch('/donaciones');
-            const data = await response.json();
-            donacionesGlobal = data;
-            pintarMarcadores(data);
+            donacionesGlobal = await response.json();
+            renderDonaciones(donacionesGlobal);
+
+            const donacionId = getDonacionIdDesdeUrl();
+            if (donacionId) {
+                const encontrada = donacionesGlobal.find(d => d.id === donacionId);
+                if (encontrada) {
+                    mostrarDetalle(encontrada);
+                    return;
+                }
+            }
+
+            if (donacionSeleccionada) {
+                const actualizada = donacionesGlobal.find(d => d.id === donacionSeleccionada.id);
+                if (actualizada) {
+                    mostrarDetalle(actualizada);
+                }
+            }
         } catch (e) {
             console.error('Error:', e);
         }
     }
 
-    function pintarMarcadores(lista) {
-        marcadores.forEach(m => map.removeLayer(m));
-        marcadores = [];
+    function renderDonaciones(lista) {
+        const container = document.getElementById('listaDonaciones');
+        container.innerHTML = '';
+
+        if (lista.length === 0) {
+            container.innerHTML = '<div class="md:col-span-2 bg-slate-50 border rounded-2xl p-6 text-center text-gray-500">No hay donaciones para este filtro.</div>';
+            return;
+        }
 
         lista.forEach(d => {
-            const lat = d.ubicacion?.latitud;
-            const lng = d.ubicacion?.longitud;
-            if (lat == null || lng == null) return;
-
-            const marcador = L.marker([lat, lng])
-                .addTo(map)
-                .bindPopup(`
-                    <div class="min-w-[220px]">
-                        <h3 class="font-bold text-lg">${d.titulo}</h3>
-                        <p class="text-sm text-gray-600">${d.descripcion}</p>
-                        <hr class="my-2">
-                        <p class="text-sm"><strong>Tipo:</strong> ${d.tipo?.id || 'Sin tipo'}</p>
-                        <p class="text-sm"><strong>Cantidad:</strong> ${d.cantidad}</p>
-                        <button class="mt-3 w-full bg-primary hover:bg-green-600 text-white py-2 rounded-lg font-semibold transition">
-                            Solicitar donacion
-                        </button>
-                    </div>
-                `);
-
-            marcadores.push(marcador);
+            const disponible = d.estado === 'DISPONIBLE';
+            const tipo = normalizarTipoDonacion(d);
+            const card = document.createElement('button');
+            card.type = 'button';
+            card.className = 'text-left bg-white border rounded-2xl p-5 shadow-sm hover:shadow-md transition';
+            card.innerHTML = `
+                <div class="flex items-start justify-between gap-3 mb-3">
+                    <h3 class="text-xl font-bold text-dark">${d.titulo}</h3>
+                    <span class="px-3 py-1 rounded-full text-xs font-semibold ${disponible ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}">
+                        ${disponible ? 'Disponible' : 'No disponible'}
+                    </span>
+                </div>
+                <div class="inline-flex items-center gap-2 text-sm font-semibold mb-3" style="color: ${tipo.color};">
+                    <i class="fas ${tipo.icon}"></i>
+                    <span>${tipo.label}</span>
+                </div>
+                <p class="text-gray-600 text-sm mb-4">${d.descripcion}</p>
+                <div class="text-sm text-gray-500 mb-4">Cantidad: ${d.cantidad}</div>
+                <div class="inline-flex items-center gap-2 text-primary font-semibold">
+                    <span>Ver detalles</span>
+                    <span>+</span>
+                </div>
+            `;
+            card.addEventListener('click', () => mostrarDetalle(d));
+            container.appendChild(card);
         });
     }
 
+    function mostrarDetalle(d) {
+        donacionSeleccionada = d;
+        const params = new URLSearchParams(window.location.search);
+        params.set('donacion', d.id);
+        window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+
+        document.getElementById('detalleVacio').classList.add('hidden');
+        document.getElementById('detalleContenido').classList.remove('hidden');
+
+        const disponible = d.estado === 'DISPONIBLE';
+        const reservada = d.estado === 'RESERVADO';
+
+        document.getElementById('detalleTitulo').innerText = d.titulo;
+        document.getElementById('detalleDescripcion').innerText = d.descripcion;
+        document.getElementById('detalleCantidad').innerText = d.cantidad;
+        document.getElementById('detalleDisponibilidad').innerText = disponible ? 'Disponible' : 'No disponible';
+        document.getElementById('detalleEstado').innerText = disponible
+            ? 'Esta donacion esta lista para solicitar.'
+            : 'Esta donacion ya fue solicitada. Puedes cancelarla o marcarla como recogida.';
+        document.getElementById('detalleEstado').className = disponible
+            ? 'text-sm font-semibold text-green-700 mb-4'
+            : 'text-sm font-semibold text-yellow-700 mb-4';
+
+        const btnSolicitar = document.getElementById('btnSolicitar');
+        const btnCancelar = document.getElementById('btnCancelar');
+        const btnRecogido = document.getElementById('btnRecogido');
+        const tipo = normalizarTipoDonacion(d);
+
+        btnSolicitar.disabled = !disponible;
+        btnSolicitar.className = disponible
+            ? 'w-full bg-primary hover:bg-green-600 text-white py-3 rounded-xl font-semibold transition'
+            : 'hidden';
+        if (!disponible) btnSolicitar.classList.add('hidden');
+        if (disponible) btnSolicitar.classList.remove('hidden');
+
+        btnCancelar.classList.toggle('hidden', !reservada);
+        btnRecogido.classList.toggle('hidden', !reservada);
+
+        inicializarMapaDetalle();
+        const lat = d.ubicacion?.latitud ?? 2.9386;
+        const lng = d.ubicacion?.longitud ?? -75.2811;
+        mapDetalle.setView([lat, lng], 15);
+        if (markerDetalle) {
+            mapDetalle.removeLayer(markerDetalle);
+        }
+        markerDetalle = L.marker([lat, lng], { icon: crearIconoMapa(d) })
+            .addTo(mapDetalle)
+            .bindPopup(`<strong>${d.titulo}</strong><br><span style="color:${tipo.color};"><i class="fas ${tipo.icon}"></i> ${tipo.label}</span>`);
+        setTimeout(() => mapDetalle.invalidateSize(), 100);
+    }
+
+    async function solicitarDonacion() {
+        await ejecutarAccion(`/donaciones/${donacionSeleccionada.id}/reservar`, 'PATCH');
+    }
+
+    async function cancelarSolicitud() {
+        await ejecutarAccion(`/donaciones/${donacionSeleccionada.id}/cancelar-reserva`, 'PATCH');
+    }
+
+    async function marcarRecogido() {
+        await ejecutarAccion(`/donaciones/${donacionSeleccionada.id}/recogido`, 'PATCH');
+        const params = new URLSearchParams(window.location.search);
+        params.delete('donacion');
+        window.history.replaceState({}, '', `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`);
+        document.getElementById('detalleContenido').classList.add('hidden');
+        document.getElementById('detalleVacio').classList.remove('hidden');
+        document.getElementById('detalleEstado').innerText = 'Selecciona una donacion para ver su disponibilidad.';
+        donacionSeleccionada = null;
+    }
+
+    async function ejecutarAccion(url, method) {
+        if (!donacionSeleccionada) return;
+
+        try {
+            const response = await fetch(url, { method });
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'No se pudo completar la accion');
+            }
+            await cargarDonaciones();
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+
     function coincideTipo(d, tipo) {
-        const tipoId = String(d.tipo?.id || '');
-        if (tipo === 'comida') return tipoId === '1';
-        if (tipo === 'ropa') return tipoId === '2';
-        if (tipo === 'medicamentos') return tipoId === '3';
-        if (tipo === 'otros') return tipoId === '4';
-        return true;
+        return tipo === 'all' ? true : normalizarTipoDonacion(d).key === tipo;
     }
 
     document.querySelectorAll('.filtro').forEach(btn => {
@@ -114,11 +336,16 @@
 
             const tipo = this.dataset.tipo;
             const filtradas = tipo === 'all' ? donacionesGlobal : donacionesGlobal.filter(d => coincideTipo(d, tipo));
-            pintarMarcadores(filtradas);
+            renderDonaciones(filtradas);
         });
     });
 
+    document.getElementById('btnSolicitar').addEventListener('click', solicitarDonacion);
+    document.getElementById('btnCancelar').addEventListener('click', cancelarSolicitud);
+    document.getElementById('btnRecogido').addEventListener('click', marcarRecogido);
+
     cargarDonaciones();
+    cargarEstadisticas();
 </script>
 </body>
 </html>

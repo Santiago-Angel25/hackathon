@@ -22,16 +22,44 @@
 <body class="bg-[#F5F6FA] min-h-screen">
 <nav class="bg-dark text-white p-4 flex justify-between items-center">
     <h1 class="text-xl font-bold">DonaNeiva - Donador</h1>
-    <a href="/logout" class="bg-red-500 px-4 py-2 rounded inline-block text-white text-center">
-        Cerrar sesion
-    </a>
+    <div class="flex gap-3">
+        <a href="/" class="bg-white/10 px-4 py-2 rounded inline-block text-white text-center">
+            Ver Landing
+        </a>
+        <a href="/logout" class="bg-red-500 px-4 py-2 rounded inline-block text-white text-center">
+            Cerrar sesion
+        </a>
+    </div>
 </nav>
 
 <div class="max-w-6xl mx-auto p-6">
-    <div class="mb-8 text-center">
+    <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
+        <article class="bg-white rounded-2xl shadow-lg p-5">
+            <p class="text-sm text-gray-500">Donaciones activas</p>
+            <p id="stat-donaciones" class="text-3xl font-bold text-primary mt-2">0</p>
+        </article>
+        <article class="bg-white rounded-2xl shadow-lg p-5">
+            <p class="text-sm text-gray-500">Usuarios registrados</p>
+            <p id="stat-usuarios" class="text-3xl font-bold text-sky-600 mt-2">0</p>
+        </article>
+        <article class="bg-white rounded-2xl shadow-lg p-5">
+            <p class="text-sm text-gray-500">Entregas realizadas</p>
+            <p id="stat-entregas" class="text-3xl font-bold text-amber-500 mt-2">0</p>
+        </article>
+        <article class="bg-white rounded-2xl shadow-lg p-5">
+            <p class="text-sm text-gray-500">Vidas impactadas</p>
+            <p id="stat-vidas" class="text-3xl font-bold text-dark mt-2">0</p>
+        </article>
+    </section>
+
+    <div class="mb-8 flex flex-wrap gap-4 justify-center">
         <a href="/publicar"
            class="bg-primary hover:bg-green-600 text-white px-8 py-4 rounded-xl text-lg font-bold transition">
             + Realizar donacion
+        </a>
+        <a href="/#mapa"
+           class="bg-dark hover:bg-slate-700 text-white px-8 py-4 rounded-xl text-lg font-bold transition">
+            Ver pedidos y mapa
         </a>
     </div>
 
@@ -42,6 +70,19 @@
 </div>
 
 <script>
+    async function cargarEstadisticas() {
+        try {
+            const response = await fetch('/api/estadisticas');
+            const data = await response.json();
+            document.getElementById('stat-donaciones').textContent = data.donacionesActivas ?? 0;
+            document.getElementById('stat-usuarios').textContent = data.usuariosRegistrados ?? 0;
+            document.getElementById('stat-entregas').textContent = data.entregasRealizadas ?? 0;
+            document.getElementById('stat-vidas').textContent = data.vidasImpactadas ?? 0;
+        } catch (error) {
+            console.error('Error cargando estadisticas:', error);
+        }
+    }
+
     async function cargarDonaciones() {
         try {
             const response = await fetch('/donaciones');
@@ -75,7 +116,7 @@
                 <p class="text-sm">Cantidad: ${d.cantidad}</p>
                 <p class="text-sm">Ubicacion: ${ubicacion}</p>
                 <span class="inline-block mt-3 px-3 py-1 rounded-full text-sm font-semibold ${getColorEstado(d.estado)}">
-                    ${d.estado}
+                    ${getTextoEstado(d.estado)}
                 </span>
             `;
 
@@ -90,7 +131,13 @@
         return 'bg-gray-100';
     }
 
+    function getTextoEstado(estado) {
+        if (estado === 'RESERVADO') return 'NO DISPONIBLE';
+        return estado;
+    }
+
     cargarDonaciones();
+    cargarEstadisticas();
 </script>
 </body>
 </html>

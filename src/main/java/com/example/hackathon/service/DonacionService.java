@@ -7,6 +7,7 @@ import com.example.hackathon.model.EstadoDonacion;
 import com.example.hackathon.model.TipoDonacion;
 import com.example.hackathon.model.Ubicacion;
 import com.example.hackathon.repository.DonacionRepository;
+import com.example.hackathon.repository.TipoDonacionRepository;
 import com.example.hackathon.repository.UbicacionRepository;
 import java.util.List;
 import java.util.Optional;
@@ -17,10 +18,19 @@ public class DonacionService {
 
     private final DonacionRepository repo;
     private final UbicacionRepository ubicacionRepository;
+    private final TipoDonacionRepository tipoDonacionRepository;
+    private final MetricasService metricasService;
 
-    public DonacionService(DonacionRepository repo, UbicacionRepository ubicacionRepository) {
+    public DonacionService(
+            DonacionRepository repo,
+            UbicacionRepository ubicacionRepository,
+            TipoDonacionRepository tipoDonacionRepository,
+            MetricasService metricasService
+    ) {
         this.repo = repo;
         this.ubicacionRepository = ubicacionRepository;
+        this.tipoDonacionRepository = tipoDonacionRepository;
+        this.metricasService = metricasService;
     }
 
     public List<Donacion> listar() {
@@ -58,8 +68,13 @@ public class DonacionService {
         );
         Ubicacion ubicacionGuardada = ubicacionRepository.save(ubicacion);
 
-        TipoDonacion tipo = new TipoDonacion();
-        tipo.setId(donacionDto.getTipoId());
+        TipoDonacion tipo = tipoDonacionRepository.findById(donacionDto.getTipoId())
+                .orElseGet(() -> {
+                    TipoDonacion nuevoTipo = new TipoDonacion();
+                    nuevoTipo.setId(donacionDto.getTipoId());
+                    nuevoTipo.setIdTipo(donacionDto.getTipoId().intValue());
+                    return tipoDonacionRepository.save(nuevoTipo);
+                });
 
         Donacion donacion = new Donacion();
         donacion.setTitulo(donacionDto.getTitulo().trim());
@@ -95,6 +110,48 @@ public class DonacionService {
         }
 
         return repo.save(existente);
+    }
+
+    public Donacion reservar(Long id) {
+        Donacion donacion = repo.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Donacion con ID " + id + " no encontrada")
+                );
+
+        if (donacion.getEstado() != EstadoDonacion.DISPONIBLE) {
+            throw new IllegalArgumentException("La donacion ya no esta disponible");
+        }
+
+        donacion.setEstado(EstadoDonacion.RESERVADO);
+        return repo.save(donacion);
+    }
+
+    public Donacion cancelarReserva(Long id) {
+        Donacion donacion = repo.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Donacion con ID " + id + " no encontrada")
+                );
+
+        if (donacion.getEstado() != EstadoDonacion.RESERVADO) {
+            throw new IllegalArgumentException("Solo se puede cancelar una donacion reservada");
+        }
+
+        donacion.setEstado(EstadoDonacion.DISPONIBLE);
+        return repo.save(donacion);
+    }
+
+    public void marcarRecogido(Long id) {
+        Donacion donacion = repo.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Donacion con ID " + id + " no encontrada")
+                );
+
+        if (donacion.getEstado() != EstadoDonacion.RESERVADO) {
+            throw new IllegalArgumentException("Solo se puede marcar como recogida una donacion reservada");
+        }
+
+        metricasService.registrarRecogida();
+        repo.delete(donacion);
     }
 
     public void eliminar(Long id) {
