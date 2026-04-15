@@ -8,10 +8,9 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.hackathon.model.Donacion;
 
-
 @RestController
 @RequestMapping("/donaciones")
-@CrossOrigin // importante para el frontend
+@CrossOrigin("*")
 public class DonacionController {
 
     @Autowired
