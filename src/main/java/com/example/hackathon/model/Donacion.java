@@ -16,7 +16,7 @@ public class Donacion {
     private String descripcion;
     private Integer cantidad;
 
-    // 🔥 RELACIONES
+
 
     @ManyToOne
     @JoinColumn(name = "id_tipo")
